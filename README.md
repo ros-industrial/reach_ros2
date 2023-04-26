@@ -2,9 +2,30 @@
 ![](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
 [![Ubuntu](https://github.com/ros-industrial/reach_ros2/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/ros-industrial/reach_ros2/actions/workflows/ubuntu.yml)
 
-This package contains the ROS1-based plugin implemenations of REACH kinematics, evaluation, and display interfaces
+This package contains the ROS2-based plugin implemenations of REACH kinematics, evaluation, and display interfaces
 
 ![REACH ROS](demo/docs/reach_study_demo.gif)
+
+## Installation
+First, clone the repository into a `colcon` workspace
+``` bash
+cd ~/colcon_ws/src
+git clone https://github.com/ros-industrial/reach_ros2.git
+cd ..
+```
+
+Install the dependencies
+``` bash
+vcs import src < src/reach/dependencies.repos
+rosdep install --from-paths src --ignore-src -r -y
+colcon mixin add default https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml
+colcon mixin update default
+```
+
+Build the repository
+```
+colcon build --symlink-install --mixin rel-with-deb-info compile-commands ccache
+```
 
 ## Demo
 A simple demonstration of the capability of this repository is provided in the `demo` sub-directory.
