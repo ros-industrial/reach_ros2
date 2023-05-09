@@ -1,4 +1,4 @@
-name: Focal Noetic
+name: Ubuntu
 
 on:
   push:
@@ -7,23 +7,22 @@ on:
   pull_request:
     branches:
       - master
-  schedule:
-    - cron: '0 5 * * *'
   release:
     types:
       - released
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-  ROS_DISTRO: noetic
-  PREFIX: ${{ github.repository }}_
-
 jobs:
   ci:
+    name: ${{ matrix.distro }}
+    runs-on: ubuntu-latest    
     strategy:
       fail-fast: false
-    runs-on: ubuntu-latest
+      matrix:
+        distro: [foxy, humble, rolling]
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}
+      PREFIX: ${{ github.repository }}_
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -51,13 +50,11 @@ jobs:
       - name: Build repository
         uses: 'ros-industrial/industrial_ci@master'
         env:
-          CI_NAME: focal
-          OS_NAME: ubuntu
-          OS_CODE_NAME: focal
+          ROS_DISTRO: ${{ matrix.distro }}          
           UPSTREAM_WORKSPACE: dependencies.repos
           PREFIX: ${{ github.repository }}_
           CMAKE_ARGS: '-DENABLE_TESTING=ON -DENABLE_RUN_TESTING=OFF'
-          DOCKER_IMAGE: 'ros:${{ env.ROS_DISTRO }}'
+          DOCKER_IMAGE: 'ros:${{ matrix.distro }}'
           DOCKER_COMMIT: ${{ steps.meta.outputs.tags }}
 
       - name: Push post-build Docker
