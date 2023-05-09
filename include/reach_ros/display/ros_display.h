@@ -46,9 +46,9 @@ protected:
   visualization_msgs::msg::Marker collision_marker_;
 
   // ROS comoponents
-  rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr  joint_state_pub_;
-  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr  mesh_pub_;
-  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr  neighbors_pub_;
+  rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr mesh_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr neighbors_pub_;
   std::shared_ptr<interactive_markers::InteractiveMarkerServer> server_;
 };
 

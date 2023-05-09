@@ -35,31 +35,33 @@ namespace reach_ros
 {
 namespace utils
 {
-moveit_msgs::msg::CollisionObject createCollisionObject(const std::string& mesh_filename, const std::string& parent_link,
-                                                   const std::string& object_name);
+moveit_msgs::msg::CollisionObject createCollisionObject(const std::string& mesh_filename,
+                                                        const std::string& parent_link, const std::string& object_name);
 
 visualization_msgs::msg::Marker makeVisual(const reach::ReachRecord& r, const std::string& frame, const double scale,
-                                      const std::string& ns = "reach",
-                                      const Eigen::Vector3f& color = { 0.5, 0.5, 0.5 });
+                                           const std::string& ns = "reach",
+                                           const Eigen::Vector3f& color = { 0.5, 0.5, 0.5 });
 
 visualization_msgs::msg::InteractiveMarker makeInteractiveMarker(const std::string& id, const reach::ReachRecord& r,
-                                                            const std::string& frame, const double scale,
-                                                            const Eigen::Vector3f& rgb_color = { 0.5, 0.5, 0.5 });
+                                                                 const std::string& frame, const double scale,
+                                                                 const Eigen::Vector3f& rgb_color = { 0.5, 0.5, 0.5 });
 
 visualization_msgs::msg::Marker makeMarker(const std::vector<geometry_msgs::msg::Point>& pts, const std::string& frame,
-                                      const double scale, const std::string& ns = "");
+                                           const double scale, const std::string& ns = "");
 
 std::vector<double> transcribeInputMap(const std::map<std::string, double>& input,
                                        const std::vector<std::string>& joint_names);
 
-// declaring the node as external to allow having a single instance when loading the shared library in multiple boost plugins
+// declaring the node as external to allow having a single instance when loading the shared library in multiple boost
+// plugins
 extern rclcpp::Node::SharedPtr node;
 
 static rclcpp::Node::SharedPtr getNodeInstance()
 {
   // static singleton node
   // we need to create a node that accept arbitrary parameters later
-  //static const rclcpp::Node::SharedPtr node = std::make_shared<rclcpp::Node>("reach_study_node", rclcpp::NodeOptions().allow_undeclared_parameters(true).automatically_declare_parameters_from_overrides(true));
+  // static const rclcpp::Node::SharedPtr node = std::make_shared<rclcpp::Node>("reach_study_node",
+  // rclcpp::NodeOptions().allow_undeclared_parameters(true).automatically_declare_parameters_from_overrides(true));
   return node;
 }
 
@@ -74,10 +76,10 @@ static rclcpp::Node::SharedPtr getNodeInstance()
  */
 static void initROS(int argc, char** argv)
 {
-  static bool ros_initialized=false;
+  static bool ros_initialized = false;
   if (!ros_initialized)
   {
-    ros_initialized=true;
+    ros_initialized = true;
     rclcpp::init(argc, argv);
     static rclcpp::executors::MultiThreadedExecutor executor = rclcpp::executors::MultiThreadedExecutor();
     static std::thread executor_thread(std::bind(&rclcpp::executors::MultiThreadedExecutor::spin, &executor));

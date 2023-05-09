@@ -28,8 +28,8 @@ namespace reach_ros
 {
 namespace utils
 {
-moveit_msgs::msg::CollisionObject createCollisionObject(const std::string& mesh_filename, const std::string& parent_link,
-                                                   const std::string& object_name)
+moveit_msgs::msg::CollisionObject createCollisionObject(const std::string& mesh_filename,
+                                                        const std::string& parent_link, const std::string& object_name)
 {
   // Create a CollisionObject message for the reach object
   moveit_msgs::msg::CollisionObject obj;
@@ -52,7 +52,7 @@ moveit_msgs::msg::CollisionObject createCollisionObject(const std::string& mesh_
 }
 
 visualization_msgs::msg::Marker makeVisual(const reach::ReachRecord& r, const std::string& frame, const double scale,
-                                      const std::string& ns, const Eigen::Vector3f& color)
+                                           const std::string& ns, const Eigen::Vector3f& color)
 {
   static int idx = 0;
 
@@ -98,8 +98,8 @@ visualization_msgs::msg::Marker makeVisual(const reach::ReachRecord& r, const st
 }
 
 visualization_msgs::msg::InteractiveMarker makeInteractiveMarker(const std::string& id, const reach::ReachRecord& r,
-                                                            const std::string& frame, const double scale,
-                                                            const Eigen::Vector3f& rgb_color)
+                                                                 const std::string& frame, const double scale,
+                                                                 const Eigen::Vector3f& rgb_color)
 {
   visualization_msgs::msg::InteractiveMarker m;
   m.header.frame_id = frame;
@@ -135,7 +135,7 @@ visualization_msgs::msg::InteractiveMarker makeInteractiveMarker(const std::stri
 }
 
 visualization_msgs::msg::Marker makeMarker(const std::vector<geometry_msgs::msg::Point>& pts, const std::string& frame,
-                                      const double scale, const std::string& ns)
+                                           const double scale, const std::string& ns)
 {
   visualization_msgs::msg::Marker marker;
   marker.header.frame_id = frame;
@@ -179,7 +179,6 @@ std::vector<double> transcribeInputMap(const std::map<std::string, double>& inpu
 
   return joints;
 }
-
 
 }  // namespace utils
 }  // namespace reach_ros

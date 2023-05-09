@@ -70,7 +70,8 @@ reach::Evaluator::ConstPtr DistancePenaltyMoveItFactory::create(const YAML::Node
   auto collision_mesh_filename = reach::get<std::string>(config, "collision_mesh_filename");
   auto touch_links = reach::get<std::vector<std::string>>(config, "touch_links");
 
-  moveit::core::RobotModelConstPtr model = moveit::planning_interface::getSharedRobotModel(reach_ros::utils::getNodeInstance(), "robot_description");
+  moveit::core::RobotModelConstPtr model =
+      moveit::planning_interface::getSharedRobotModel(reach_ros::utils::getNodeInstance(), "robot_description");
   if (!model)
     throw std::runtime_error("Failed to initialize robot model pointer");
 

@@ -20,8 +20,8 @@
 #include <rclcpp/publisher.hpp>
 #include <vector>
 #include <moveit_msgs/msg/planning_scene.hpp>
- #include <functional>
- 
+#include <functional>
+
 namespace moveit
 {
 namespace core
