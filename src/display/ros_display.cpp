@@ -66,7 +66,7 @@ void ROSDisplay::showResults(const reach::ReachResult& db) const
   server_->clear();
 
   // Create a callback for when a marker is clicked on
-  auto show_goal_cb = [this, db](const visualization_msgs::msg::InteractiveMarkerFeedback::ConstPtr& fb) {
+  auto show_goal_cb = [this, db](const visualization_msgs::msg::InteractiveMarkerFeedback::ConstSharedPtr& fb) {
     std::size_t idx = std::strtoul(fb->marker_name.c_str(), nullptr, 10);
     updateRobotPose(db.at(idx).goal_state);
   };
