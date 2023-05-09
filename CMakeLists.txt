@@ -25,7 +25,8 @@ set(INCLUDE_DIRS include)
 include_directories(${INCLUDE_DIRS})
 
 # Plugins
-add_library(${PROJECT_NAME}_plugins SHARED
+add_library(
+  ${PROJECT_NAME}_plugins SHARED
   src/utils.cpp
   # Evaluator
   src/evaluation/manipulability_moveit.cpp
@@ -34,15 +35,14 @@ add_library(${PROJECT_NAME}_plugins SHARED
   # IK Solver
   src/ik/moveit_ik_solver.cpp
   # Display
-  src/display/ros_display.cpp
-)
+  src/display/ros_display.cpp)
 
-target_include_directories(${PROJECT_NAME}_plugins
+target_include_directories(${PROJECT_NAME}_plugins PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                                                          $<INSTALL_INTERFACE:include>)
+
+ament_target_dependencies(
+  ${PROJECT_NAME}_plugins
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>)
-
-ament_target_dependencies(${PROJECT_NAME}_plugins PUBLIC
   ament_cmake
   boost_plugin_loader
   tf2_eigen
@@ -58,7 +58,9 @@ target_link_libraries(${PROJECT_NAME}_plugins PRIVATE reach::reach)
 
 # Reach study node
 add_executable(${PROJECT_NAME}_node src/reach_study_node.cpp)
-ament_target_dependencies(${PROJECT_NAME}_node PUBLIC
+ament_target_dependencies(
+  ${PROJECT_NAME}_node
+  PUBLIC
   yaml-cpp
   ament_cmake
   boost_plugin_loader
@@ -79,13 +81,14 @@ add_subdirectory(demo)
 # INSTALL ##
 # ######################################################################################################################
 
-install(TARGETS ${PROJECT_NAME}_plugins
+install(
+  TARGETS ${PROJECT_NAME}_plugins
   EXPORT ${PROJECT_NAME}_plugins
   LIBRARY DESTINATION lib
-  INCLUDES DESTINATION include)
+  INCLUDES
+  DESTINATION include)
 
-install(TARGETS ${PROJECT_NAME}_node
-  DESTINATION lib/${PROJECT_NAME})
+install(TARGETS ${PROJECT_NAME}_node DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION include)
 
