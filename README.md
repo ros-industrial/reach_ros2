@@ -1,8 +1,36 @@
 # REACH ROS Plugins
+![](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
+[![Focal Noetic](https://github.com/ros-industrial/reach_ros/actions/workflows/focal_noetic.yml/badge.svg)](https://github.com/ros-industrial/reach_ros/actions/workflows/focal_noetic.yml)
 
 This package contains the ROS1-based plugin implemenations of REACH kinematics, evaluation, and display interfaces
 
 ![REACH ROS](demo/docs/reach_study_demo.gif)
+
+## Demo
+A simple demonstration of the capability of this repository is provided in the `demo` sub-directory.
+See the [instructions](demo/README.md) for details on how to run the demo.
+
+## Usage
+Use the following steps to run a reach study with a robot using the ROS1 infrastructure and plugins.
+
+1. Create a URDF of your robot system
+1. Create a launch file to load the URDF, SRDF, and other required parameters (e.g. related to kinematics, joint, limits) to the parameter server (see [this demo example file](demo/config/robot.launch))
+1. Create a mesh model of the workpiece
+    > Note: the origin of this model should align with the kinematic base frame of the robot
+1. Create a point cloud of the target points on the workpiece
+    - This point cloud can be generated using a command line tool from PCL 1.8:
+      ```
+      pcl_mesh_sampling <workpiece_mesh>.ply <output_cloud>.pcd -n_samples <number of samples> -leaf_size <leaf_size> -write_normals true
+      ```
+1. Create a configuration YAML file defining the parameters of the reach study and the configuration of the interface plugins (see [this demo example](demo/config/reach_study.yaml))
+1. Run the setup launch file
+    ```
+    roslaunch reach_ros setup.launch robot:=<load_robot_parameters>.launch
+    ```
+1. Run the reach study analysis
+    ```
+    roslaunch reach_ros start.launch config_file:=<config_file.yaml> config_name:=<arbitrary_config>
+    ```
 
 ## Evaluation Plugins
 
