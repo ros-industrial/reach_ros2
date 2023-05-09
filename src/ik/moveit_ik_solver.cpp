@@ -66,7 +66,9 @@ std::vector<std::vector<double>> MoveItIKSolver::solveIK(const Eigen::Isometry3d
   state.setJointGroupPositions(jmg_, seed_subset);
   state.update();
 
-  if (state.setFromIK(jmg_, target, 0.0, std::bind(&MoveItIKSolver::isIKSolutionValid, this, _1, _2, _3)))
+  if (state.setFromIK(jmg_, target, 0.0,
+                      std::bind(&MoveItIKSolver::isIKSolutionValid, this, std::placeholders::_1, std::placeholders::_2,
+                                std::placeholders::_3)))
   {
     std::vector<double> solution;
     state.copyJointGroupPositions(jmg_, solution);
