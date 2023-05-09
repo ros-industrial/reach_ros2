@@ -2,6 +2,8 @@
 
 This package contains the ROS1-based plugin implemenations of REACH kinematics, evaluation, and display interfaces
 
+![REACH ROS](demo/docs/reach_study_demo.gif)
+
 ## Evaluation Plugins
 
 ### Manipulability
