@@ -1,6 +1,6 @@
 # REACH ROS Plugins
 ![](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
-[![Focal Noetic](https://github.com/ros-industrial/reach_ros/actions/workflows/focal_noetic.yml/badge.svg)](https://github.com/ros-industrial/reach_ros/actions/workflows/focal_noetic.yml)
+[![Ubuntu](https://github.com/ros-industrial/reach_ros2/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/ros-industrial/reach_ros2/actions/workflows/ubuntu.yml)
 
 This package contains the ROS1-based plugin implemenations of REACH kinematics, evaluation, and display interfaces
 
