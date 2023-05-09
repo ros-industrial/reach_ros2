@@ -1,28 +1,32 @@
 cmake_minimum_required(VERSION 3.5)
-project(reach_ros)
+
+# Extract package name and version from package.xml
+find_package(ros_industrial_cmake_boilerplate REQUIRED)
+extract_package_metadata(pkg)
+project(${pkg_extracted_name} VERSION ${pkg_extracted_version} LANGUAGES CXX)
 
 add_compile_options(-std=c++17)
 set(CMAKE_CXX_FLAGS -rdynamic)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 find_package(reach REQUIRED)
+find_package(boost_plugin_loader REQUIRED)
+find_package(yaml-cpp REQUIRED)
+
+set(ROS2_DEPS
+    tf2_eigen
+    interactive_markers
+    moveit_core
+    moveit_msgs
+    moveit_ros_planning_interface
+    rclcpp
+    sensor_msgs
+    visualization_msgs)
 
 find_package(ament_cmake REQUIRED)
-find_package(boost_plugin_loader REQUIRED)
-find_package(tf2_eigen REQUIRED)
-find_package(interactive_markers REQUIRED)
-find_package(moveit_core REQUIRED)
-find_package(moveit_msgs REQUIRED)
-find_package(moveit_ros_planning_interface REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(sensor_msgs REQUIRED)
-find_package(visualization_msgs REQUIRED)
-
-# ######################################################################################################################
-# BUILD ##
-# ######################################################################################################################
-set(INCLUDE_DIRS include)
-include_directories(${INCLUDE_DIRS})
+foreach(dep ${ROS2_DEPS})
+  find_package(${dep} REQUIRED)
+endforeach()
 
 # Plugins
 add_library(
@@ -36,64 +40,30 @@ add_library(
   src/ik/moveit_ik_solver.cpp
   # Display
   src/display/ros_display.cpp)
-
 target_include_directories(${PROJECT_NAME}_plugins PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                                                           $<INSTALL_INTERFACE:include>)
-
-ament_target_dependencies(
-  ${PROJECT_NAME}_plugins
-  PUBLIC
-  ament_cmake
-  boost_plugin_loader
-  tf2_eigen
-  interactive_markers
-  moveit_core
-  moveit_msgs
-  moveit_ros_planning_interface
-  rclcpp
-  sensor_msgs
-  visualization_msgs)
-
-target_link_libraries(${PROJECT_NAME}_plugins PRIVATE reach::reach)
+target_link_libraries(${PROJECT_NAME}_plugins PUBLIC reach::reach)
+ament_target_dependencies(${PROJECT_NAME}_plugins PUBLIC ${ROS2_DEPS})
 
 # Reach study node
 add_executable(${PROJECT_NAME}_node src/reach_study_node.cpp)
-ament_target_dependencies(
-  ${PROJECT_NAME}_node
-  PUBLIC
-  yaml-cpp
-  ament_cmake
-  boost_plugin_loader
-  tf2_eigen
-  interactive_markers
-  moveit_core
-  moveit_msgs
-  moveit_ros_planning_interface
-  rclcpp
-  sensor_msgs
-  visualization_msgs)
-target_link_libraries(${PROJECT_NAME}_node PRIVATE reach::reach PUBLIC ${PROJECT_NAME}_plugins)
+target_link_libraries(${PROJECT_NAME}_node PUBLIC reach::reach yaml-cpp ${PROJECT_NAME}_plugins)
+ament_target_dependencies(${PROJECT_NAME}_node PUBLIC ${ROS2_DEPS})
 
 # Demo
 add_subdirectory(demo)
 
-# ######################################################################################################################
-# INSTALL ##
-# ######################################################################################################################
+# Install the libraries
+install(TARGETS ${PROJECT_NAME}_plugins EXPORT ${PROJECT_NAME}-targets DESTINATION lib)
 
-install(
-  TARGETS ${PROJECT_NAME}_plugins
-  EXPORT ${PROJECT_NAME}_plugins
-  LIBRARY DESTINATION lib
-  INCLUDES
-  DESTINATION include)
-
+# Install the executable(s)
 install(TARGETS ${PROJECT_NAME}_node DESTINATION lib/${PROJECT_NAME})
 
-install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION include)
+# Install the headers
+install(DIRECTORY include/${PROJECT_NAME} DESTINATION include)
 
+# Install the support directories
 install(DIRECTORY launch demo DESTINATION share/${PROJECT_NAME})
 
-ament_export_include_directories(${INCLUDE_DIRS})
-ament_export_libraries(${PROJECT_NAME})
+ament_export_targets(${PROJECT_NAME}-targets HAS_LIBRARY_TARGET)
 ament_package()
