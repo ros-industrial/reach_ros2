@@ -9,7 +9,7 @@ find_package(reach REQUIRED)
 
 find_package(ament_cmake REQUIRED)
 find_package(boost_plugin_loader REQUIRED)
-find_package(eigen_conversions REQUIRED)
+find_package(tf2_eigen REQUIRED)
 find_package(interactive_markers REQUIRED)
 find_package(moveit_core REQUIRED)
 find_package(moveit_msgs REQUIRED)
@@ -45,7 +45,7 @@ target_include_directories(${PROJECT_NAME}_plugins
 ament_target_dependencies(${PROJECT_NAME}_plugins PUBLIC
   ament_cmake
   boost_plugin_loader
-  eigen_conversions
+  tf2_eigen
   interactive_markers
   moveit_core
   moveit_msgs
@@ -62,7 +62,7 @@ ament_target_dependencies(${PROJECT_NAME}_node PUBLIC
   yaml-cpp
   ament_cmake
   boost_plugin_loader
-  eigen_conversions
+  tf2_eigen
   interactive_markers
   moveit_core
   moveit_msgs

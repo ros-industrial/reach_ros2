@@ -19,7 +19,6 @@
 #include <geometric_shapes/shape_operations.h>
 #include <geometric_shapes/shapes.h>
 #include <reach/types.h>
-#include <eigen_conversions/eigen_msg.h>
 
 const static double ARROW_SCALE_RATIO = 6.0;
 const static double NEIGHBOR_MARKER_SCALE_RATIO = ARROW_SCALE_RATIO / 2.0;
