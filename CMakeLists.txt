@@ -1,43 +1,36 @@
-cmake_minimum_required(VERSION 2.8.3)
-project(reach_ros)
+cmake_minimum_required(VERSION 3.5)
 
-add_compile_options(-std=c++14)
+# Extract package name and version from package.xml
+find_package(ros_industrial_cmake_boilerplate REQUIRED)
+extract_package_metadata(pkg)
+project(${pkg_extracted_name} VERSION ${pkg_extracted_version} LANGUAGES CXX)
+
+add_compile_options(-std=c++17)
+set(CMAKE_CXX_FLAGS -rdynamic)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 find_package(reach REQUIRED)
+find_package(boost_plugin_loader REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
-find_package(
-  catkin REQUIRED
-  COMPONENTS eigen_conversions
-             interactive_markers
-             moveit_core
-             moveit_msgs
-             moveit_ros_planning_interface
-             sensor_msgs
-             visualization_msgs)
+set(ROS2_DEPS
+    tf2_eigen
+    interactive_markers
+    moveit_core
+    moveit_msgs
+    moveit_ros_planning_interface
+    rclcpp
+    sensor_msgs
+    visualization_msgs)
 
-catkin_package(
-  INCLUDE_DIRS
-  include
-  LIBRARIES
-  ${PROJECT_NAME}_plugins
-  CATKIN_DEPENDS
-  eigen_conversions
-  interactive_markers
-  moveit_core
-  moveit_msgs
-  moveit_ros_planning_interface
-  sensor_msgs
-  visualization_msgs)
-
-# ######################################################################################################################
-# BUILD ##
-# ######################################################################################################################
-
-include_directories(${catkin_INCLUDE_DIRS} include)
+find_package(ament_cmake REQUIRED)
+foreach(dep ${ROS2_DEPS})
+  find_package(${dep} REQUIRED)
+endforeach()
 
 # Plugins
 add_library(
-  ${PROJECT_NAME}_plugins
+  ${PROJECT_NAME}_plugins SHARED
   src/utils.cpp
   # Evaluator
   src/evaluation/manipulability_moveit.cpp
@@ -47,29 +40,27 @@ add_library(
   src/ik/moveit_ik_solver.cpp
   # Display
   src/display/ros_display.cpp)
-target_link_libraries(${PROJECT_NAME}_plugins ${catkin_LIBRARIES} reach::reach)
+target_include_directories(${PROJECT_NAME}_plugins PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                                                          $<INSTALL_INTERFACE:include>)
+target_link_libraries(${PROJECT_NAME}_plugins PUBLIC reach::reach)
+ament_target_dependencies(${PROJECT_NAME}_plugins PUBLIC ${ROS2_DEPS})
 
 # Reach study node
 add_executable(${PROJECT_NAME}_node src/reach_study_node.cpp)
-target_link_libraries(
-  ${PROJECT_NAME}_node
-  ${catkin_LIBRARIES}
-  yaml-cpp
-  reach::reach)
+target_link_libraries(${PROJECT_NAME}_node PUBLIC reach::reach yaml-cpp ${PROJECT_NAME}_plugins)
+ament_target_dependencies(${PROJECT_NAME}_node PUBLIC ${ROS2_DEPS})
 
-# Demo
-add_subdirectory(demo)
+# Install the libraries
+install(TARGETS ${PROJECT_NAME}_plugins EXPORT ${PROJECT_NAME}-targets DESTINATION lib)
 
-# ######################################################################################################################
-# INSTALL ##
-# ######################################################################################################################
+# Install the executable(s)
+install(TARGETS ${PROJECT_NAME}_node DESTINATION lib/${PROJECT_NAME})
 
-install(
-  TARGETS ${PROJECT_NAME}_plugins ${PROJECT_NAME}_node
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+# Install the headers
+install(DIRECTORY include/${PROJECT_NAME} DESTINATION include)
 
-install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+# Install the support directories
+install(DIRECTORY launch demo DESTINATION share/${PROJECT_NAME})
 
-install(DIRECTORY launch demo DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+ament_export_targets(${PROJECT_NAME}-targets HAS_LIBRARY_TARGET)
+ament_package()

@@ -18,7 +18,6 @@
 
 #include <moveit/common_planning_interface_objects/common_objects.h>
 #include <moveit/planning_scene/planning_scene.h>
-#include <moveit_msgs/PlanningScene.h>
 #include <reach/plugin_utils.h>
 #include <yaml-cpp/yaml.h>
 
@@ -36,6 +35,8 @@ namespace reach_ros
 {
 namespace ik
 {
+using namespace std::placeholders;
+
 std::string MoveItIKSolver::COLLISION_OBJECT_NAME = "reach_object";
 
 MoveItIKSolver::MoveItIKSolver(moveit::core::RobotModelConstPtr model, const std::string& planning_group,
@@ -47,11 +48,11 @@ MoveItIKSolver::MoveItIKSolver(moveit::core::RobotModelConstPtr model, const std
 
   scene_.reset(new planning_scene::PlanningScene(model_));
 
-  ros::NodeHandle nh;
-  scene_pub_ = nh.advertise<moveit_msgs::PlanningScene>("planning_scene", 1, true);
-  moveit_msgs::PlanningScene scene_msg;
+  scene_pub_ =
+      reach_ros::utils::getNodeInstance()->create_publisher<moveit_msgs::msg::PlanningScene>("planning_scene", 1);
+  moveit_msgs::msg::PlanningScene scene_msg;
   scene_->getPlanningSceneMsg(scene_msg);
-  scene_pub_.publish(scene_msg);
+  scene_pub_->publish(scene_msg);
 }
 
 std::vector<std::vector<double>> MoveItIKSolver::solveIK(const Eigen::Isometry3d& target,
@@ -65,7 +66,9 @@ std::vector<std::vector<double>> MoveItIKSolver::solveIK(const Eigen::Isometry3d
   state.setJointGroupPositions(jmg_, seed_subset);
   state.update();
 
-  if (state.setFromIK(jmg_, target, 0.0, boost::bind(&MoveItIKSolver::isIKSolutionValid, this, _1, _2, _3)))
+  if (state.setFromIK(jmg_, target, 0.0,
+                      std::bind(&MoveItIKSolver::isIKSolutionValid, this, std::placeholders::_1, std::placeholders::_2,
+                                std::placeholders::_3)))
   {
     std::vector<double> solution;
     state.copyJointGroupPositions(jmg_, solution);
@@ -98,14 +101,14 @@ void MoveItIKSolver::addCollisionMesh(const std::string& collision_mesh_filename
                                       const std::string& collision_mesh_frame)
 {
   // Add the collision object to the planning scene
-  moveit_msgs::CollisionObject obj =
+  moveit_msgs::msg::CollisionObject obj =
       utils::createCollisionObject(collision_mesh_filename, collision_mesh_frame, COLLISION_OBJECT_NAME);
   if (!scene_->processCollisionObjectMsg(obj))
     throw std::runtime_error("Failed to add collision mesh to planning scene");
 
-  moveit_msgs::PlanningScene scene_msg;
+  moveit_msgs::msg::PlanningScene scene_msg;
   scene_->getPlanningSceneMsg(scene_msg);
-  scene_pub_.publish(scene_msg);
+  scene_pub_->publish(scene_msg);
 }
 
 void MoveItIKSolver::setTouchLinks(const std::vector<std::string>& touch_links)
@@ -123,8 +126,8 @@ reach::IKSolver::ConstPtr MoveItIKSolverFactory::create(const YAML::Node& config
   auto planning_group = reach::get<std::string>(config, "planning_group");
   auto dist_threshold = reach::get<double>(config, "distance_threshold");
 
-  utils::initROS();
-  moveit::core::RobotModelConstPtr model = moveit::planning_interface::getSharedRobotModel("robot_description");
+  moveit::core::RobotModelConstPtr model =
+      moveit::planning_interface::getSharedRobotModel(reach_ros::utils::getNodeInstance(), "robot_description");
   if (!model)
     throw std::runtime_error("Failed to initialize robot model pointer");
 
@@ -187,8 +190,8 @@ reach::IKSolver::ConstPtr DiscretizedMoveItIKSolverFactory::create(const YAML::N
   auto planning_group = reach::get<std::string>(config, "planning_group");
   auto dist_threshold = reach::get<double>(config, "distance_threshold");
 
-  utils::initROS();
-  moveit::core::RobotModelConstPtr model = moveit::planning_interface::getSharedRobotModel("robot_description");
+  moveit::core::RobotModelConstPtr model =
+      moveit::planning_interface::getSharedRobotModel(reach_ros::utils::getNodeInstance(), "robot_description");
   if (!model)
     throw std::runtime_error("Failed to initialize robot model pointer");
 

@@ -2,9 +2,28 @@
 ![](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
 [![Ubuntu](https://github.com/ros-industrial/reach_ros2/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/ros-industrial/reach_ros2/actions/workflows/ubuntu.yml)
 
-This package contains the ROS1-based plugin implemenations of REACH kinematics, evaluation, and display interfaces
+This package contains the ROS2-based plugin implemenations of REACH kinematics, evaluation, and display interfaces
 
 ![REACH ROS](demo/docs/reach_study_demo.gif)
+
+## Installation
+First, clone the repository into a `colcon` workspace
+``` bash
+cd ~/reach_ws/src
+git clone https://github.com/ros-industrial/reach_ros2.git
+cd ..
+```
+
+Install the dependencies
+``` bash
+vcs import src < src/reach/dependencies.repos
+rosdep install --from-paths src --ignore-src -r -y
+```
+
+Build the repository
+```
+colcon build --symlink-install
+```
 
 ## Demo
 A simple demonstration of the capability of this repository is provided in the `demo` sub-directory.
@@ -13,8 +32,7 @@ See the [instructions](demo/README.md) for details on how to run the demo.
 ## Usage
 Use the following steps to run a reach study with a robot using the ROS1 infrastructure and plugins.
 
-1. Create a URDF of your robot system
-1. Create a launch file to load the URDF, SRDF, and other required parameters (e.g. related to kinematics, joint, limits) to the parameter server (see [this demo example file](demo/config/robot.launch))
+1. Create any files describing your robot system required by the REACH plugins (e.g., URDF, SRDF, kinematics file, joint limits file, etc.)
 1. Create a mesh model of the workpiece
     > Note: the origin of this model should align with the kinematic base frame of the robot
 1. Create a point cloud of the target points on the workpiece
@@ -25,11 +43,18 @@ Use the following steps to run a reach study with a robot using the ROS1 infrast
 1. Create a configuration YAML file defining the parameters of the reach study and the configuration of the interface plugins (see [this demo example](demo/config/reach_study.yaml))
 1. Run the setup launch file
     ```
-    roslaunch reach_ros setup.launch robot:=<load_robot_parameters>.launch
+    ros2 launch reach_ros setup.launch robot_description_file:=<path_to_URDF>
     ```
 1. Run the reach study analysis
     ```
-    roslaunch reach_ros start.launch config_file:=<config_file.yaml> config_name:=<arbitrary_config>
+    ros2 launch reach_ros start.launch \
+      robot_description_file:=<path_to_URDF> \
+      robot_description_semantic_file:=<path_to_SRDF> \
+      robot_description_kinematics_file:=<path_to_kinematics.yaml> \
+      robot_description_joint_limits_file:=<path_to_joint_limits.yaml> \
+      config_file:=<config_file.yaml> \
+      config_name:=<arbitrary_config> \
+      results_dir:=<arbitrary_results_directory>
     ```
 
 ## Evaluation Plugins

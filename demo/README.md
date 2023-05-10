@@ -8,13 +8,13 @@ This package provides a demonstration of the REACH capability for an arbitrary r
 
 Run the demo and view the pre-calculated results:
 ```
-roslaunch reach_ros setup.launch robot:=`rospack find reach_ros`/demo/config/robot.launch
-roslaunch reach_ros start.launch config_file:=`rospack find reach_ros`/demo/config/reach_study.yaml config_name:=reach_study results_dir:=`rospack find reach_ros`/demo/results
+ros2 launch reach_ros setup.launch.py 
+ros2 launch reach_ros start.launch.py config_name:=reach_study
 ```
 
-> Note: the `config_name` parameter controls the name of the folder in which results are saved. By providing a name that already exists in the results
-directory (specified in the `reach_study.yaml` file), the study will load existing results from file rather than re-running the study. To re-run the study,
-simply execute the commands above with a different `config_name` parameter.
+> Note: the `config_name` parameter controls the name of the folder in which results are saved.
+By providing a name that already exists in the results directory (an additional argument in the `start.launch.py` file), the study will load existing results from file rather than re-running the study.
+To re-run the study, simply execute the commands above with a different `config_name` parameter.
 
 ## Study Notes
 
