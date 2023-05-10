@@ -22,7 +22,6 @@
   <exec_depend>joint_state_publisher</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>xacro</exec_depend>
-  <test_depend>rostest</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
