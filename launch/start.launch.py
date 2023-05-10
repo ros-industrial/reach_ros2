@@ -1,11 +1,11 @@
-import yaml
-
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch.substitutions import Command
+from launch_ros.substitutions import FindPackageShare
+import yaml
 
 
 def load_file(file_path):
@@ -24,68 +24,49 @@ def load_yaml(file_path):
         return None
 
 
+parameters = [
+  {'name': 'robot_description_file',                'description': 'Path to the URDF/xacro file',                     'default': PathJoinSubstitution([FindPackageShare('reach_ros'), 'demo', 'model', 'reach_study.xacro'])},
+  {'name': 'robot_description_semantic_file',       'description': 'Path to the SRDF file',                           'default': PathJoinSubstitution([FindPackageShare('reach_ros'), 'demo', 'model', 'reach_study.srdf'])},
+  {'name': 'robot_description_kinematics_file',     'description': 'Path to the MoveIt kinematics file',              'default': PathJoinSubstitution([FindPackageShare('reach_ros'), 'demo', 'model', 'kinematics.yaml'])},
+  {'name': 'robot_description_joint_limits_file',   'description': 'Path to the MoveIt joint limits file',            'default': PathJoinSubstitution([FindPackageShare('reach_ros'), 'demo', 'model', 'joint_limits.yaml'])},
+  {'name': 'config_file',                           'description': 'Path to the reach study configuration YAML file', 'default': PathJoinSubstitution([FindPackageShare('reach_ros'), 'demo', 'config', 'reach_study.yaml'])},
+  {'name': 'config_name',                           'description': 'Reach study configuration name',                  'default': 'reach_study'},
+  {'name': 'results_dir',                           'description': 'Directory in which to save reach study results',  'default': PathJoinSubstitution([FindPackageShare('reach_ros'), 'demo', 'results'])},
+]
+
+
+def declare_launch_arguments():
+    return [DeclareLaunchArgument(entry['name'], description=entry['description'], default_value=entry['default']) for entry in parameters]
+
+
 def generate_launch_description():
-    return LaunchDescription([
-        DeclareLaunchArgument(
-            'robot_description_file_path',
-            description='Path to the robot_description URDF file'),
-        DeclareLaunchArgument(
-            'robot_description_semantic_config_path',
-            description='The semantic description that corresponds to the URDF'),
-        DeclareLaunchArgument(
-            'robot_description_kinematics_path',
-            description='Load default settings for kinematics; these settings are overridden by settings in a node\'s namespace'),
-        DeclareLaunchArgument(
-            'robot_description_joints_limits_path',
-            description='Load updated joint limits (override information from URDF)'),
-        DeclareLaunchArgument(
-            'config_file_path',
-            description='YAML configuration file for the reach study'),
-        DeclareLaunchArgument(
-            'config_name',
-            description='Arbitrary configuration name for the reach study', default_value="reach_study"),
-        DeclareLaunchArgument(
-            'results_dir_path',
-            description='Location in which reach study results will be saved', default_value="/tmp"),
-        OpaqueFunction(function=launch)])
+    return LaunchDescription(declare_launch_arguments() + [OpaqueFunction(function=launch)])
 
 
 def launch(context, *args, **kwargs):
-    robot_description_file_path = LaunchConfiguration(
-        'robot_description_file_path')
-    robot_description_semantic_config_path = LaunchConfiguration(
-        'robot_description_semantic_config_path')
-    robot_description_kinematics_path = LaunchConfiguration(
-        'robot_description_kinematics_path')
-    robot_description_joints_limits_path = LaunchConfiguration(
-        'robot_description_joints_limits_path')
-    config_file_path = LaunchConfiguration(
-        'config_file_path')
-    config_name = LaunchConfiguration('config_name')
-    results_dir_path = LaunchConfiguration('results_dir_path')
+    robot_description_file = LaunchConfiguration('robot_description_file')
+    robot_description_semantic_file = LaunchConfiguration('robot_description_semantic_file')
+    robot_description_kinematics_file = LaunchConfiguration('robot_description_kinematics_file')
+    robot_description_joints_limits_file = LaunchConfiguration('robot_description_joint_limits_file')
 
-    robot_description = ParameterValue(Command(['xacro ',
-                                                robot_description_file_path,
-                                                ""]),  # you can add your xacro arguments here
-                                       value_type=str)
-    robot_description_semantic_config = load_file(
-        robot_description_semantic_config_path.perform(context))
-    kinematics_yaml = load_yaml(
-        robot_description_kinematics_path.perform(context))
-    joint_limits_yaml = load_yaml(
-        robot_description_joints_limits_path.perform(context))
+    robot_description = ParameterValue(Command(['xacro ', robot_description_file]), value_type=str)
+    robot_description_semantic = load_file(robot_description_semantic_file.perform(context))
+    kinematics_yaml = load_yaml(robot_description_kinematics_file.perform(context))
+    joint_limits_yaml = load_yaml(robot_description_joints_limits_file.perform(context))
 
-    return [Node(
+    return [
+        Node(
             package='reach_ros',
             executable='reach_ros_node',
             output='screen',
             emulate_tty=True,
             parameters=[{
                 'robot_description': robot_description,
-                'robot_description_semantic': robot_description_semantic_config,
+                'robot_description_semantic': robot_description_semantic,
                 'robot_description_kinematics': kinematics_yaml,
                 'robot_description_planning': joint_limits_yaml,
-                'config_file': ParameterValue(config_file_path),
-                'config_name': ParameterValue(config_name),
-                'results_dir': ParameterValue(results_dir_path)
-            }])]
+                'config_file': LaunchConfiguration('config_file'),
+                'config_name': LaunchConfiguration('config_name'),
+                'results_dir': LaunchConfiguration('results_dir')}]
+        )
+    ]
