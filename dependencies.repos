@@ -8,5 +8,5 @@
    version: 0.2.1
 - git:
    local-name: reach
-   uri: https://github.com/marip8/reach.git
-   version: 21b9fe25667c8c61c7829a3573a842efaeb1ba00
+   uri: https://github.com/ros-industrial/reach.git
+   version: 0.1.1
