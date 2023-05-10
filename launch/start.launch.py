@@ -5,6 +5,7 @@ from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch.substitutions import Command
 from launch_ros.substitutions import FindPackageShare
+import os
 import yaml
 
 
@@ -53,6 +54,8 @@ def launch(context, *args, **kwargs):
     robot_description_semantic = load_file(robot_description_semantic_file.perform(context))
     kinematics_yaml = load_yaml(robot_description_kinematics_file.perform(context))
     joint_limits_yaml = load_yaml(robot_description_joints_limits_file.perform(context))
+
+    os.environ['REACH_PLUGINS'] = 'reach_ros_plugins'
 
     return [
         Node(
