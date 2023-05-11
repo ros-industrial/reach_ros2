@@ -143,7 +143,7 @@ reach::Display::ConstPtr ROSDisplayFactory::create(const YAML::Node& config) con
 
   // Optionally add a collision mesh
   const std::string collision_mesh_filename_key = "collision_mesh_filename";
-  const std::string collision_mesh_frame_key = "collision_mesh_key";
+  const std::string collision_mesh_frame_key = "collision_mesh_frame";
   if (config[collision_mesh_filename_key])
   {
     auto collision_mesh_filename = reach::get<std::string>(config, collision_mesh_filename_key);
