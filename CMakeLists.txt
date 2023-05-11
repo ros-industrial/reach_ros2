@@ -39,7 +39,9 @@ add_library(
   # IK Solver
   src/ik/moveit_ik_solver.cpp
   # Display
-  src/display/ros_display.cpp)
+  src/display/ros_display.cpp
+  # Target pose generator
+  src/target_pose_generator/transformed_point_cloud_target_pose_generator.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                                                   $<INSTALL_INTERFACE:include>)
 target_link_libraries(${PROJECT_NAME} PUBLIC reach::reach)
