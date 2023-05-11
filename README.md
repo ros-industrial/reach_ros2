@@ -194,10 +194,25 @@ Unreachable points are colorized black. There are two methods for computing the 
 Parameters:
 
 - **`collision_mesh_filename`**
-  - The file path to the collision mesh model of the workpiece, in the `package://` or 'file://' URI format
+  - The file path to the collision mesh model of the workpiece, in the `package://` or `file://` URI format
 - **`kinematic_base_frame`**
   - The base frame of the kinematic tree in which to display the interactive markers
 - **`marker_scale`**
   - The length (in meters) of the arrow markers representing the target Cartesian points
 - **`use_full_color_range`** (optional, default: False)
   - Colorize the heat map using the full range of colors (such that the target with the lowest score is the deepest hue of blue, and the target with the highest score is the deepest hue of red)
+
+## Target Pose Generator Plugins
+
+### Transformed Point Cloud Target Pose Generator
+
+This plugin inherits `reach::PointCloudTargetPoseGenerator`, which creates target reach study waypoints from a point cloud file with normals, and transforms the point cloud points into a desired URDF frame (typically the kinematic base frame of the robot).
+
+Parameters:
+
+- **`pcd_file`**
+  - The path to the point cloud file (.pcd format), in the `package://` or `file://` URI
+- **`points_frame`**
+  - The frame of the URDF to which the point cloud points are relative (i.e. the origin frame of the point cloud)
+- **`target_frame`**
+  - The frame into which the point cloud points should be transformed for the reach study purposes. This should be the kinematic base frame of the robot
