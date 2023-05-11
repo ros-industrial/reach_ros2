@@ -81,5 +81,3 @@ reach::Evaluator::ConstPtr DistancePenaltyMoveItFactory::create(const YAML::Node
 
 }  // namespace evaluation
 }  // namespace reach_ros
-
-EXPORT_IK_SOLVER_PLUGIN(reach_ros::evaluation::DistancePenaltyMoveItFactory, DistancePenaltyMoveIt)

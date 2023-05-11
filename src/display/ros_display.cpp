@@ -159,5 +159,3 @@ reach::Display::ConstPtr ROSDisplayFactory::create(const YAML::Node& config) con
 
 }  // namespace display
 }  // namespace reach_ros
-
-EXPORT_DISPLAY_PLUGIN(reach_ros::display::ROSDisplayFactory, ROSDisplay)

@@ -80,5 +80,3 @@ reach::Evaluator::ConstPtr JointPenaltyMoveItFactory::create(const YAML::Node& c
 
 }  // namespace evaluation
 }  // namespace reach_ros
-
-EXPORT_EVALUATOR_PLUGIN(reach_ros::evaluation::JointPenaltyMoveItFactory, JointPenaltyMoveIt)
