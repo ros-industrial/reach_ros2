@@ -43,16 +43,16 @@ rclcpp::Node::SharedPtr node;
 
 int main(int argc, char** argv)
 {
+  rclcpp::init(argc, argv);
+  rclcpp::executors::MultiThreadedExecutor executor = rclcpp::executors::MultiThreadedExecutor();
+  std::thread executor_thread(std::bind(&rclcpp::executors::MultiThreadedExecutor::spin, &executor));
+  reach_ros::utils::node = std::make_shared<rclcpp::Node>(
+      "reach_study_node",
+      rclcpp::NodeOptions().allow_undeclared_parameters(true).automatically_declare_parameters_from_overrides(true));
+  executor.add_node(reach_ros::utils::node);
+
   try
   {
-    rclcpp::init(argc, argv);
-    rclcpp::executors::MultiThreadedExecutor executor = rclcpp::executors::MultiThreadedExecutor();
-    std::thread executor_thread(std::bind(&rclcpp::executors::MultiThreadedExecutor::spin, &executor));
-    reach_ros::utils::node = std::make_shared<rclcpp::Node>(
-        "reach_study_node",
-        rclcpp::NodeOptions().allow_undeclared_parameters(true).automatically_declare_parameters_from_overrides(true));
-    executor.add_node(reach_ros::utils::node);
-
     // Load the configuration information
     const YAML::Node config = YAML::LoadFile(get<std::string>(reach_ros::utils::getNodeInstance(), "config_file"));
     const std::string config_name = get<std::string>(reach_ros::utils::getNodeInstance(), "config_name");
@@ -64,7 +64,13 @@ int main(int argc, char** argv)
   catch (const std::exception& ex)
   {
     std::cerr << ex.what() << std::endl;
+    rclcpp::shutdown();
+    executor_thread.join();
+    return -1;
   }
+
+  rclcpp::shutdown();
+  executor_thread.join();
 
   return 0;
 }
