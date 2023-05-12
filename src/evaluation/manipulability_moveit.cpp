@@ -256,7 +256,3 @@ double calculateCharacteristicLength(moveit::core::RobotModelConstPtr model, con
 
 }  // namespace evaluation
 }  // namespace reach_ros
-
-EXPORT_EVALUATOR_PLUGIN(reach_ros::evaluation::ManipulabilityMoveItFactory, ManipulabilityMoveIt)
-EXPORT_EVALUATOR_PLUGIN(reach_ros::evaluation::ManipulabilityScaledFactory, ManipulabilityScaledMoveIt)
-EXPORT_EVALUATOR_PLUGIN(reach_ros::evaluation::ManipulabilityRatioFactory, ManipulabilityRatioMoveIt)

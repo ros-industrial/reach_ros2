@@ -135,7 +135,7 @@ reach::IKSolver::ConstPtr MoveItIKSolverFactory::create(const YAML::Node& config
 
   // Optionally add a collision mesh
   const std::string collision_mesh_filename_key = "collision_mesh_filename";
-  const std::string collision_mesh_frame_key = "collision_mesh_key";
+  const std::string collision_mesh_frame_key = "collision_mesh_frame";
   if (config[collision_mesh_filename_key])
   {
     auto collision_mesh_filename = reach::get<std::string>(config, collision_mesh_filename_key);
@@ -207,7 +207,7 @@ reach::IKSolver::ConstPtr DiscretizedMoveItIKSolverFactory::create(const YAML::N
 
   // Optionally add a collision mesh
   const std::string collision_mesh_filename_key = "collision_mesh_filename";
-  const std::string collision_mesh_frame_key = "collision_mesh_key";
+  const std::string collision_mesh_frame_key = "collision_mesh_frame";
   if (config[collision_mesh_filename_key])
   {
     auto collision_mesh_filename = reach::get<std::string>(config, collision_mesh_filename_key);
@@ -230,6 +230,3 @@ reach::IKSolver::ConstPtr DiscretizedMoveItIKSolverFactory::create(const YAML::N
 
 }  // namespace ik
 }  // namespace reach_ros
-
-EXPORT_IK_SOLVER_PLUGIN(reach_ros::ik::MoveItIKSolverFactory, MoveItIKSolver)
-EXPORT_IK_SOLVER_PLUGIN(reach_ros::ik::DiscretizedMoveItIKSolverFactory, DiscretizedMoveItIKSolverFactory)

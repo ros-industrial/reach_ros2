@@ -28,9 +28,9 @@ foreach(dep ${ROS2_DEPS})
   find_package(${dep} REQUIRED)
 endforeach()
 
-# Plugins
+# Plugin Implementations
 add_library(
-  ${PROJECT_NAME}_plugins SHARED
+  ${PROJECT_NAME} SHARED
   src/utils.cpp
   # Evaluator
   src/evaluation/manipulability_moveit.cpp
@@ -39,11 +39,17 @@ add_library(
   # IK Solver
   src/ik/moveit_ik_solver.cpp
   # Display
-  src/display/ros_display.cpp)
-target_include_directories(${PROJECT_NAME}_plugins PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-                                                          $<INSTALL_INTERFACE:include>)
-target_link_libraries(${PROJECT_NAME}_plugins PUBLIC reach::reach)
-ament_target_dependencies(${PROJECT_NAME}_plugins PUBLIC ${ROS2_DEPS})
+  src/display/ros_display.cpp
+  # Target pose generator
+  src/target_pose_generator/transformed_point_cloud_target_pose_generator.cpp)
+target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                                                  $<INSTALL_INTERFACE:include>)
+target_link_libraries(${PROJECT_NAME} PUBLIC reach::reach)
+ament_target_dependencies(${PROJECT_NAME} PUBLIC ${ROS2_DEPS})
+
+# Plugin Library
+add_library(${PROJECT_NAME}_plugins SHARED src/plugins.cpp)
+target_link_libraries(${PROJECT_NAME}_plugins PUBLIC ${PROJECT_NAME})
 
 # Reach study node
 add_executable(${PROJECT_NAME}_node src/reach_study_node.cpp)
@@ -51,7 +57,7 @@ target_link_libraries(${PROJECT_NAME}_node PUBLIC reach::reach yaml-cpp ${PROJEC
 ament_target_dependencies(${PROJECT_NAME}_node PUBLIC ${ROS2_DEPS})
 
 # Install the libraries
-install(TARGETS ${PROJECT_NAME}_plugins EXPORT ${PROJECT_NAME}-targets DESTINATION lib)
+install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_plugins EXPORT ${PROJECT_NAME}-targets DESTINATION lib)
 
 # Install the executable(s)
 install(TARGETS ${PROJECT_NAME}_node DESTINATION lib/${PROJECT_NAME})
