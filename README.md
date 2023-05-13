@@ -16,7 +16,7 @@ cd ..
 
 Install the dependencies
 ``` bash
-vcs import src < src/reach/dependencies.repos
+vcs import src < src/reach_ros2/dependencies.repos
 rosdep install --from-paths src --ignore-src -r -y
 ```
 
