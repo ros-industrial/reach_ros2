@@ -16,7 +16,7 @@ cd ..
 
 Install the dependencies
 ``` bash
-vcs import src < src/reach/dependencies.repos
+vcs import src < src/reach_ros2/dependencies.repos
 rosdep install --from-paths src --ignore-src -r -y
 ```
 
@@ -115,6 +115,9 @@ Parameters:
 - **`collision_mesh_filename`**
   - The filename (in ROS package URI format) of the reach object mesh to be used to do collision checking
   - Example: `package://<your_package>/<folder>/<filename>.stl
+- **`collision_mesh_frame`**
+  - The TF frame to which the collision mesh should be attached
+  - If left unspecified, the collision mesh will be attached to the kinematic base frame associated with `planning_group`
 - **`touch_links`**
   - The names of the robot links with which the reach object mesh is allowed to collide
 - **`exponent`**
@@ -145,6 +148,9 @@ Parameters:
   set to 0.1m, then IK solutions whose distance to nearest collision is less than 0.1m will be invalidated
 - **`collision_mesh_filename`**
   - The file path to the collision mesh model of the workpiece, in the `package://` or 'file://' URI format
+- **`collision_mesh_frame`**
+  - The TF frame to which the collision mesh should be attached
+  - If left unspecified, the collision mesh will be attached to the kinematic base frame associated with `planning_group`
 - **`touch_links`**
   - The TF links that are allowed to be in contact with the collision mesh
 - **`evaluation_plugin`**
@@ -164,6 +170,9 @@ Parameters:
   set to 0.1m, then IK solutions whose distance to nearest collision is less than 0.1m will be invalidated
 - **`collision_mesh_filename`**
   - The file path to the collision mesh model of the workpiece, in the `package://` or 'file://' URI format
+- **`collision_mesh_frame`**
+  - The TF frame to which the collision mesh should be attached
+  - If left unspecified, the collision mesh will be attached to the kinematic base frame associated with `planning_group`
 - **`touch_links`**
   - The TF links that are allowed to be in contact with the collision mesh
 - **`evaluation_plugin`**
@@ -195,6 +204,9 @@ Parameters:
 
 - **`collision_mesh_filename`**
   - The file path to the collision mesh model of the workpiece, in the `package://` or `file://` URI format
+- **`collision_mesh_frame`**
+  - The TF frame to which the collision mesh should be attached
+  - If left unspecified, the collision mesh will be attached to `kinematic_base_frame`
 - **`kinematic_base_frame`**
   - The base frame of the kinematic tree in which to display the interactive markers
 - **`marker_scale`**
