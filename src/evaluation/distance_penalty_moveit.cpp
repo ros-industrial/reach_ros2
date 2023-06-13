@@ -25,29 +25,34 @@ namespace reach_ros
 {
 namespace evaluation
 {
+std::string DistancePenaltyMoveIt::COLLISION_OBJECT_NAME = "reach_object";
+
 DistancePenaltyMoveIt::DistancePenaltyMoveIt(moveit::core::RobotModelConstPtr model, const std::string& planning_group,
-                                             const double dist_threshold, int exponent,
-                                             std::string collision_mesh_filename, std::vector<std::string> touch_links)
+                                             const double dist_threshold, int exponent)
   : model_(model)
   , jmg_(model_->getJointModelGroup(planning_group))
   , dist_threshold_(dist_threshold)
   , exponent_(exponent)
-  , collision_mesh_filename_(collision_mesh_filename)
-  , touch_links_(std::move(touch_links))
 {
   if (!jmg_)
     throw std::runtime_error("Failed to get joint model group");
 
   scene_.reset(new planning_scene::PlanningScene(model_));
+}
 
-  // Add the collision mesh object to the planning scene
-  const std::string object_name = "reach_object";
+void DistancePenaltyMoveIt::addCollisionMesh(const std::string& collision_mesh_filename,
+                                             const std::string& collision_mesh_frame)
+{
+  // Add the collision object to the planning scene
   moveit_msgs::msg::CollisionObject obj =
-      utils::createCollisionObject(collision_mesh_filename_, jmg_->getSolverInstance()->getBaseFrame(), object_name);
+      utils::createCollisionObject(collision_mesh_filename, collision_mesh_frame, COLLISION_OBJECT_NAME);
   if (!scene_->processCollisionObjectMsg(obj))
     throw std::runtime_error("Failed to add collision mesh to planning scene");
+}
 
-  scene_->getAllowedCollisionMatrixNonConst().setEntry(object_name, touch_links_, true);
+void DistancePenaltyMoveIt::setTouchLinks(const std::vector<std::string>& touch_links)
+{
+  scene_->getAllowedCollisionMatrixNonConst().setEntry(COLLISION_OBJECT_NAME, touch_links, true);
 }
 
 double DistancePenaltyMoveIt::calculateScore(const std::map<std::string, double>& pose) const
@@ -67,16 +72,43 @@ reach::Evaluator::ConstPtr DistancePenaltyMoveItFactory::create(const YAML::Node
   auto planning_group = reach::get<std::string>(config, "planning_group");
   auto dist_threshold = reach::get<double>(config, "distance_threshold");
   auto exponent = reach::get<int>(config, "exponent");
-  auto collision_mesh_filename = reach::get<std::string>(config, "collision_mesh_filename");
-  auto touch_links = reach::get<std::vector<std::string>>(config, "touch_links");
 
   moveit::core::RobotModelConstPtr model =
       moveit::planning_interface::getSharedRobotModel(reach_ros::utils::getNodeInstance(), "robot_description");
   if (!model)
     throw std::runtime_error("Failed to initialize robot model pointer");
 
-  return std::make_shared<DistancePenaltyMoveIt>(model, planning_group, dist_threshold, exponent,
-                                                 collision_mesh_filename, touch_links);
+  auto evaluator = std::make_shared<DistancePenaltyMoveIt>(model, planning_group, dist_threshold, exponent);
+
+  // Optionally add a collision mesh
+  const std::string collision_mesh_filename_key = "collision_mesh_filename";
+  const std::string collision_mesh_frame_key = "collision_mesh_frame";
+  if (config[collision_mesh_filename_key])
+  {
+    auto collision_mesh_filename = reach::get<std::string>(config, collision_mesh_filename_key);
+    const moveit::core::JointModelGroup* jmg = model->getJointModelGroup(planning_group);
+    if (!jmg)
+      throw std::runtime_error("Joint model group '" + planning_group + "' does not exist");
+
+    kinematics::KinematicsBaseConstPtr solver = jmg->getSolverInstance();
+    if (!solver)
+      throw std::runtime_error("No IK solver defined for joint model group '" + planning_group + "'");
+
+    std::string collision_mesh_frame = config[collision_mesh_frame_key] ?
+                                           reach::get<std::string>(config, collision_mesh_frame_key) :
+                                           solver->getBaseFrame();
+
+    evaluator->addCollisionMesh(collision_mesh_filename, collision_mesh_frame);
+  }
+
+  const std::string touch_links_key = "touch_links";
+  if (config[touch_links_key])
+  {
+    auto touch_links = reach::get<std::vector<std::string>>(config, touch_links_key);
+    evaluator->setTouchLinks(touch_links);
+  }
+
+  return evaluator;
 }
 
 }  // namespace evaluation
