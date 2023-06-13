@@ -104,7 +104,7 @@ Parameters:
 
 This plugin uses the MoveIt! collision environment to calculate the distance to closest collision
 for a robot pose. That distance value is then used to score the robot pose. Larger distance to closest collision
-results in higher pose score. Range: [0, inf)
+results in higher pose score. Range: [0, 1]
 
 Parameters:
 
@@ -112,16 +112,16 @@ Parameters:
   - The name of the planning group to be used to solve the robot's inverse kinematics
 - **`distance_threshold`**
   - The distance between 2 closest surfaces to collision under which an inverse kinematics solution will be considered invalid
-- **`collision_mesh_filename`**
+- **`collision_mesh_filename`** (optional)
   - The filename (in ROS package URI format) of the reach object mesh to be used to do collision checking
   - Example: `package://<your_package>/<folder>/<filename>.stl
-- **`collision_mesh_frame`**
+- **`collision_mesh_frame`** (optional)
   - The TF frame to which the collision mesh should be attached
   - If left unspecified, the collision mesh will be attached to the kinematic base frame associated with `planning_group`
 - **`touch_links`**
   - The names of the robot links with which the reach object mesh is allowed to collide
 - **`exponent`**
-  - score = (closest_distance_to_collision - distance_threshold)^exponent.
+  - score = min(abs(closest_distance_to_collision / distance_threshold), 1.0)^exponent.
 
 ### Joint Penalty
 
@@ -146,9 +146,9 @@ Parameters:
 - **`distance_threshold`**
   - The distance from nearest collision at which to invalidate an IK solution. For example, if this parameter is
   set to 0.1m, then IK solutions whose distance to nearest collision is less than 0.1m will be invalidated
-- **`collision_mesh_filename`**
+- **`collision_mesh_filename`** (optional)
   - The file path to the collision mesh model of the workpiece, in the `package://` or 'file://' URI format
-- **`collision_mesh_frame`**
+- **`collision_mesh_frame`** (optional)
   - The TF frame to which the collision mesh should be attached
   - If left unspecified, the collision mesh will be attached to the kinematic base frame associated with `planning_group`
 - **`touch_links`**
@@ -168,9 +168,9 @@ Parameters:
 - **`distance_threshold`**
   - The distance from nearest collision at which to invalidate an IK solution. For example, if this parameter is
   set to 0.1m, then IK solutions whose distance to nearest collision is less than 0.1m will be invalidated
-- **`collision_mesh_filename`**
+- **`collision_mesh_filename`** (optional)
   - The file path to the collision mesh model of the workpiece, in the `package://` or 'file://' URI format
-- **`collision_mesh_frame`**
+- **`collision_mesh_frame`** (optional)
   - The TF frame to which the collision mesh should be attached
   - If left unspecified, the collision mesh will be attached to the kinematic base frame associated with `planning_group`
 - **`touch_links`**

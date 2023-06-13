@@ -43,19 +43,22 @@ class DistancePenaltyMoveIt : public reach::Evaluator
 {
 public:
   DistancePenaltyMoveIt(moveit::core::RobotModelConstPtr model, const std::string& planning_group,
-                        const double dist_threshold, int exponent, std::string collision_mesh_filename,
-                        std::vector<std::string> touch_links);
+                        const double dist_threshold, int exponent);
   double calculateScore(const std::map<std::string, double>& pose) const override;
 
-private:
+  void addCollisionMesh(const std::string& collision_mesh_filename, const std::string& collision_mesh_frame);
+
+  void setTouchLinks(const std::vector<std::string>& touch_links);
+
+protected:
   moveit::core::RobotModelConstPtr model_;
   const moveit::core::JointModelGroup* jmg_;
   const double dist_threshold_;
   const int exponent_;
-  const std::string collision_mesh_filename_;
-  const std::vector<std::string> touch_links_;
 
   planning_scene::PlanningScenePtr scene_;
+
+  static std::string COLLISION_OBJECT_NAME;
 };
 
 struct DistancePenaltyMoveItFactory : public reach::EvaluatorFactory
