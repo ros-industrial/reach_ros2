@@ -2,8 +2,8 @@
 Changelog for package reach_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2023-06-13)
+------------------
 * Updated to REACH 1.3.0
 * Clean up config/launch files
 * Updated demo results
