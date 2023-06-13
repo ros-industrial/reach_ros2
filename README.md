@@ -104,7 +104,7 @@ Parameters:
 
 This plugin uses the MoveIt! collision environment to calculate the distance to closest collision
 for a robot pose. That distance value is then used to score the robot pose. Larger distance to closest collision
-results in higher pose score. Range: [0, inf)
+results in higher pose score. Range: [0, 1]
 
 Parameters:
 
@@ -121,7 +121,7 @@ Parameters:
 - **`touch_links`**
   - The names of the robot links with which the reach object mesh is allowed to collide
 - **`exponent`**
-  - score = (closest_distance_to_collision / distance_threshold)^exponent.
+  - score = min(abs(closest_distance_to_collision / distance_threshold), 1.0)^exponent.
 
 ### Joint Penalty
 

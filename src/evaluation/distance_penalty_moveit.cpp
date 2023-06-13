@@ -64,7 +64,8 @@ double DistancePenaltyMoveIt::calculateScore(const std::map<std::string, double>
   state.update();
 
   const double dist = scene_->distanceToCollision(state, scene_->getAllowedCollisionMatrix());
-  return std::pow((dist / dist_threshold_), exponent_);
+  const double clipped_distance = std::min(std::abs(dist / dist_threshold_), 1.0);
+  return std::pow(clipped_distance, exponent_);
 }
 
 reach::Evaluator::ConstPtr DistancePenaltyMoveItFactory::create(const YAML::Node& config) const
