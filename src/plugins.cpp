@@ -7,7 +7,7 @@
 
 #include <reach/plugin_utils.h>
 EXPORT_DISPLAY_PLUGIN(reach_ros::display::ROSDisplayFactory, ROSDisplay)
-EXPORT_IK_SOLVER_PLUGIN(reach_ros::evaluation::DistancePenaltyMoveItFactory, DistancePenaltyMoveIt)
+EXPORT_EVALUATOR_PLUGIN(reach_ros::evaluation::DistancePenaltyMoveItFactory, DistancePenaltyMoveIt)
 EXPORT_EVALUATOR_PLUGIN(reach_ros::evaluation::JointPenaltyMoveItFactory, JointPenaltyMoveIt)
 EXPORT_EVALUATOR_PLUGIN(reach_ros::evaluation::ManipulabilityMoveItFactory, ManipulabilityMoveIt)
 EXPORT_EVALUATOR_PLUGIN(reach_ros::evaluation::ManipulabilityScaledFactory, ManipulabilityScaledMoveIt)
