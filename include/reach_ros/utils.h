@@ -52,40 +52,11 @@ visualization_msgs::msg::Marker makeMarker(const std::vector<geometry_msgs::msg:
 std::vector<double> transcribeInputMap(const std::map<std::string, double>& input,
                                        const std::vector<std::string>& joint_names);
 
-// declaring the node as external to allow having a single instance when loading the shared library in multiple boost
-// plugins
-extern rclcpp::Node::SharedPtr node;
-
-static rclcpp::Node::SharedPtr getNodeInstance()
-{
-  // static singleton node
-  // we need to create a node that accept arbitrary parameters later
-  // static const rclcpp::Node::SharedPtr node = std::make_shared<rclcpp::Node>("reach_study_node",
-  // rclcpp::NodeOptions().allow_undeclared_parameters(true).automatically_declare_parameters_from_overrides(true));
-  return node;
-}
-
 /**
- * @brief Conditionally initializes ROS using an arbitary node name
- * @details In the case that ROS-enabled plugins are created and invoked in a non-ROS enabled process, ROS must be
- * initialized for the plugins to access the ROS parameter server and publish data. This function should be invoked in a
- * plugin factory or interface before attempting to utilize ROS components such that the process creating the plugin
- * factory. One singleton ROS node is created on the first call of the method and can then be used by all plugins.
- *
- * Note: this function first checks if ROS has already been initialized before calling rclcpp::init
+ * @brief Returns a singleton ROS2 node for accessing parameters and publishing data
+ * @details ROS must be initialized (rclcpp::init, rclpy.init) before calling this method
  */
-static void initROS(int argc, char** argv)
-{
-  static bool ros_initialized = false;
-  if (!ros_initialized)
-  {
-    ros_initialized = true;
-    rclcpp::init(argc, argv);
-    static rclcpp::executors::MultiThreadedExecutor executor = rclcpp::executors::MultiThreadedExecutor();
-    static std::thread executor_thread(std::bind(&rclcpp::executors::MultiThreadedExecutor::spin, &executor));
-    executor.add_node(getNodeInstance());
-  }
-}
+rclcpp::Node::SharedPtr getNodeInstance();
 
 }  // namespace utils
 }  // namespace reach_ros

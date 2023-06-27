@@ -16,11 +16,8 @@
 #include <reach/reach_study.h>
 #include <reach_ros/utils.h>
 
-#include <thread>
 #include <chrono>
-
-#include <boost/filesystem.hpp>
-#include <rclcpp/rclcpp.hpp>
+#include <thread>
 #include <yaml-cpp/yaml.h>
 
 template <typename T>
@@ -32,27 +29,13 @@ T get(const std::shared_ptr<rclcpp::Node> node, const std::string& key)
   return val;
 }
 
-namespace reach_ros
-{
-namespace utils
-{
-// we need to do this since the node is specified as "extern" in the shared library
-rclcpp::Node::SharedPtr node;
-}  // namespace utils
-}  // namespace reach_ros
-
 int main(int argc, char** argv)
 {
-  rclcpp::init(argc, argv);
-  rclcpp::executors::MultiThreadedExecutor executor = rclcpp::executors::MultiThreadedExecutor();
-  std::thread executor_thread(std::bind(&rclcpp::executors::MultiThreadedExecutor::spin, &executor));
-  reach_ros::utils::node = std::make_shared<rclcpp::Node>(
-      "reach_study_node",
-      rclcpp::NodeOptions().allow_undeclared_parameters(true).automatically_declare_parameters_from_overrides(true));
-  executor.add_node(reach_ros::utils::node);
-
   try
   {
+    // Initialize ROS
+    rclcpp::init(argc, argv);
+
     // Load the configuration information
     const YAML::Node config = YAML::LoadFile(get<std::string>(reach_ros::utils::getNodeInstance(), "config_file"));
     const std::string config_name = get<std::string>(reach_ros::utils::getNodeInstance(), "config_name");
@@ -64,13 +47,8 @@ int main(int argc, char** argv)
   catch (const std::exception& ex)
   {
     std::cerr << ex.what() << std::endl;
-    rclcpp::shutdown();
-    executor_thread.join();
     return -1;
   }
-
-  rclcpp::shutdown();
-  executor_thread.join();
 
   return 0;
 }
