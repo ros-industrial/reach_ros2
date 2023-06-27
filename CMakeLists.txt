@@ -53,7 +53,7 @@ target_link_libraries(${PROJECT_NAME}_plugins PUBLIC ${PROJECT_NAME})
 
 # Reach study node
 add_executable(${PROJECT_NAME}_node src/reach_study_node.cpp)
-target_link_libraries(${PROJECT_NAME}_node PUBLIC reach::reach yaml-cpp ${PROJECT_NAME}_plugins)
+target_link_libraries(${PROJECT_NAME}_node PUBLIC reach::reach yaml-cpp ${PROJECT_NAME})
 ament_target_dependencies(${PROJECT_NAME}_node PUBLIC ${ROS2_DEPS})
 
 # Install the libraries
