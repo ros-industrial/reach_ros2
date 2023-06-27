@@ -57,7 +57,8 @@ target_link_libraries(${PROJECT_NAME}_node PUBLIC reach::reach yaml-cpp ${PROJEC
 ament_target_dependencies(${PROJECT_NAME}_node PUBLIC ${ROS2_DEPS})
 
 # Install the libraries
-install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_plugins EXPORT ${PROJECT_NAME}-targets DESTINATION lib)
+install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}-targets DESTINATION lib)
+install(TARGETS ${PROJECT_NAME}_plugins DESTINATION lib)
 
 # Install the executable(s)
 install(TARGETS ${PROJECT_NAME}_node DESTINATION lib/${PROJECT_NAME})
