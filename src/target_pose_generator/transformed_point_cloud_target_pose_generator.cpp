@@ -23,7 +23,7 @@ reach::VectorIsometry3d TransformedPointCloudTargetPoseGenerator::generate() con
   reach::VectorIsometry3d target_poses = PointCloudTargetPoseGenerator::generate();
 
   // Look up the transform between the source and target frame
-  tf2_ros::Buffer buffer(utils::node->get_clock());
+  tf2_ros::Buffer buffer(utils::getNodeInstance()->get_clock());
   tf2_ros::TransformListener listener(buffer);
   Eigen::Isometry3d transform = tf2::transformToEigen(
       buffer.lookupTransform(target_frame_, points_frame_, tf2::TimePointZero, tf2::durationFromSec(3.0)));

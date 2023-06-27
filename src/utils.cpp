@@ -23,10 +23,66 @@
 const static double ARROW_SCALE_RATIO = 6.0;
 const static double NEIGHBOR_MARKER_SCALE_RATIO = ARROW_SCALE_RATIO / 2.0;
 
+/**
+ * @brief Singleton class for interacting with a ROS network
+ */
+class ROSInterface
+{
+public:
+  ROSInterface();
+  virtual ~ROSInterface();
+
+  rclcpp::Node::SharedPtr node;
+
+private:
+  rclcpp::executors::MultiThreadedExecutor::SharedPtr executor;
+  std::shared_ptr<std::thread> executor_thread;
+};
+
+ROSInterface::ROSInterface()
+{
+  // Ensure ROS is initialized before creating the node/executor
+  // Note: we cannot initialize ROS here ourselves with rclcpp::init(0, nullptr) because ROS2 parameters which we want
+  // to access are passed in via argv. Since we don't have access to argv outside an executable and can't require
+  // users/plugin loaders to pass it around, this function should throw an exception if ROS is not initialized
+  if (!rclcpp::ok())
+    throw std::runtime_error("ROS must be initialized before accessing the node");
+
+  // Create a node that accepts arbitrary parameters later
+  node = std::make_shared<rclcpp::Node>(
+      "reach_study_node",
+      rclcpp::NodeOptions().allow_undeclared_parameters(true).automatically_declare_parameters_from_overrides(true));
+
+  // Create an executor and add the node to it
+  executor = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
+  executor->add_node(node);
+
+  // Create a thread
+  executor_thread =
+      std::make_shared<std::thread>(std::bind(&rclcpp::executors::MultiThreadedExecutor::spin, &*executor));
+}
+
+ROSInterface::~ROSInterface()
+{
+  rclcpp::shutdown();
+  executor_thread->join();
+}
+
 namespace reach_ros
 {
 namespace utils
 {
+rclcpp::Node::SharedPtr getNodeInstance()
+{
+  static std::unique_ptr<ROSInterface> ros;
+
+  // Create an instance of the ROS interface if it doesn't exist yet
+  if (!ros)
+    ros = std::make_unique<ROSInterface>();
+
+  return ros->node;
+}
+
 moveit_msgs::msg::CollisionObject createCollisionObject(const std::string& mesh_filename,
                                                         const std::string& parent_link, const std::string& object_name)
 {
