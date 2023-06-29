@@ -27,7 +27,7 @@ colcon build --symlink-install
 
 ## Demo
 A simple demonstration of the capability of this repository is provided in the `demo` sub-directory.
-See the [instructions](demo/README.md) for details on how to run the demo.
+See the [instructions](demo/README.md) for details on how to launch the demo from ROS 2 and see the [Python instructions](demo/python/README.md) to see how you can use the Python interface to launch studies.
 
 ## Usage
 Use the following steps to run a reach study with a robot using the ROS1 infrastructure and plugins.
