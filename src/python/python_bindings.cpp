@@ -30,80 +30,93 @@ namespace reach_ros
 void init_ros(const bp::list& argv)
 {
   int argc = bp::len(argv);
-  if(argc==0){
+  if (argc == 0)
+  {
     // init() does not accept argv with length 0
     rclcpp::init(0, nullptr);
-  }else{
-  char *argv_c[argc];
-  for (bp::ssize_t i = 0; i < argc; ++i)
-    argv_c[i] = bp::extract<char *>{ argv[i] }();
-  rclcpp::init(argc, argv_c);
+  }
+  else
+  {
+    char* argv_c[argc];
+    for (bp::ssize_t i = 0; i < argc; ++i)
+      argv_c[i] = bp::extract<char*>{ argv[i] }();
+    rclcpp::init(argc, argv_c);
   }
 }
 
-bp::object get_parameter(std::string name){
-rclcpp::Parameter parameter = reach_ros::utils::getNodeInstance()->get_parameter(name);
-rclcpp::ParameterType type = parameter.get_type();
-switch (type){
-  case rclcpp::ParameterType::PARAMETER_BOOL:
-    return bp::object(parameter.as_bool());
-  case rclcpp::ParameterType::PARAMETER_INTEGER:
-    return bp::object(parameter.as_int());
-  case rclcpp::ParameterType::PARAMETER_DOUBLE:
-    return bp::object(parameter.as_double());
-  case rclcpp::ParameterType::PARAMETER_STRING:
-    return bp::object(parameter.as_string());
-  case rclcpp::ParameterType::PARAMETER_BYTE_ARRAY:
-    return bp::object(parameter.as_byte_array());
-  case rclcpp::ParameterType::PARAMETER_BOOL_ARRAY:
-    return bp::object(parameter.as_bool_array());
-  case rclcpp::ParameterType::PARAMETER_INTEGER_ARRAY:
-    return bp::object(parameter.as_integer_array());
-  case rclcpp::ParameterType::PARAMETER_DOUBLE_ARRAY:
-    return bp::object(parameter.as_double_array());
-  case rclcpp::ParameterType::PARAMETER_STRING_ARRAY:
-    return bp::object(parameter.as_string_array());
-  default:
-    return bp::object();
+bp::object get_parameter(std::string name)
+{
+  rclcpp::Parameter parameter = reach_ros::utils::getNodeInstance()->get_parameter(name);
+  rclcpp::ParameterType type = parameter.get_type();
+  switch (type)
+  {
+    case rclcpp::ParameterType::PARAMETER_BOOL:
+      return bp::object(parameter.as_bool());
+    case rclcpp::ParameterType::PARAMETER_INTEGER:
+      return bp::object(parameter.as_int());
+    case rclcpp::ParameterType::PARAMETER_DOUBLE:
+      return bp::object(parameter.as_double());
+    case rclcpp::ParameterType::PARAMETER_STRING:
+      return bp::object(parameter.as_string());
+    case rclcpp::ParameterType::PARAMETER_BYTE_ARRAY:
+      return bp::object(parameter.as_byte_array());
+    case rclcpp::ParameterType::PARAMETER_BOOL_ARRAY:
+      return bp::object(parameter.as_bool_array());
+    case rclcpp::ParameterType::PARAMETER_INTEGER_ARRAY:
+      return bp::object(parameter.as_integer_array());
+    case rclcpp::ParameterType::PARAMETER_DOUBLE_ARRAY:
+      return bp::object(parameter.as_double_array());
+    case rclcpp::ParameterType::PARAMETER_STRING_ARRAY:
+      return bp::object(parameter.as_string_array());
+    default:
+      return bp::object();
   }
 }
 
-void set_parameter_bool(std::string name, bool value){
+void set_parameter_bool(std::string name, bool value)
+{
   reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
 }
 
-void set_parameter_integer(std::string name, int value){
+void set_parameter_integer(std::string name, int value)
+{
   reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
 }
 
-void set_parameter_double(std::string name, double value){
+void set_parameter_double(std::string name, double value)
+{
   reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
 }
 
-void set_parameter_string(std::string name, std::string value){
+void set_parameter_string(std::string name, std::string value)
+{
   reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
 }
 
-void set_parameter_byte_array(std::string name, uint8_t* value){
+void set_parameter_byte_array(std::string name, uint8_t* value)
+{
   reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
 }
 
-void set_parameter_bool_array(std::string name, bool* value){
+void set_parameter_bool_array(std::string name, bool* value)
+{
   reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
 }
 
-void set_parameter_integer_array(std::string name, int* value){
+void set_parameter_integer_array(std::string name, int* value)
+{
   reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
 }
 
-void set_parameter_double_array(std::string name, double* value){
+void set_parameter_double_array(std::string name, double* value)
+{
   reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
 }
 
-void set_parameter_string_array(std::string name, std::string* value){
+void set_parameter_string_array(std::string name, std::string* value)
+{
   reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
 }
-
 
 BOOST_PYTHON_MODULE(MODULE_NAME)
 {
