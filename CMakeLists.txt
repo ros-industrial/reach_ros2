@@ -5,6 +5,15 @@ find_package(ros_industrial_cmake_boilerplate REQUIRED)
 extract_package_metadata(pkg)
 project(${pkg_extracted_name} VERSION ${pkg_extracted_version} LANGUAGES CXX)
 
+option(BUILD_PYTHON "Build Python bindings" ON)
+
+# Python dependencies need to be found first
+if(BUILD_PYTHON)
+  find_package(Python REQUIRED COMPONENTS Interpreter Development)
+  find_package(PythonLibs 3 REQUIRED)
+  find_package(Boost REQUIRED COMPONENTS python numpy)
+endif()
+
 add_compile_options(-std=c++17)
 set(CMAKE_CXX_FLAGS -rdynamic)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -55,6 +64,12 @@ target_link_libraries(${PROJECT_NAME}_plugins PUBLIC ${PROJECT_NAME})
 add_executable(${PROJECT_NAME}_node src/reach_study_node.cpp)
 target_link_libraries(${PROJECT_NAME}_node PUBLIC reach::reach yaml-cpp ${PROJECT_NAME})
 ament_target_dependencies(${PROJECT_NAME}_node PUBLIC ${ROS2_DEPS})
+
+if(BUILD_PYTHON)
+  message("Building Python bindings")
+  add_subdirectory(src/python)
+  install(PROGRAMS demo/python/demo.py DESTINATION lib/${PROJECT_NAME})
+endif()
 
 # Install the libraries
 install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}-targets DESTINATION lib)
