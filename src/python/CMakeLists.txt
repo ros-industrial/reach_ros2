@@ -13,7 +13,6 @@ set_target_properties(
                                     OUTPUT_NAME ${PROJECT_NAME})
 target_cxx_version(${PROJECT_NAME}_python PUBLIC VERSION 17)
 
-
 list(
   APPEND
   TARGETS
