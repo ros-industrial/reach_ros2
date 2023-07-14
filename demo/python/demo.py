@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-import subprocess
-import sys
-import yaml
-
-from ament_index_python.packages import get_package_share_directory
-from rclpy.parameter import Parameter, PARAMETER_SEPARATOR_STRING
-from rclpy.logging import LoggingSeverity
-
 import reach
 import reach_ros
+
+from ament_index_python.packages import get_package_share_directory
+import os.path
+from rclpy.parameter import Parameter, PARAMETER_SEPARATOR_STRING
+from rclpy.logging import LoggingSeverity
+import sys
+import xacro
+import yaml
 
 
 def parse_yaml(parameter_file, namespace=''):
@@ -32,62 +32,73 @@ def parse_parameter_dict(*, namespace, parameter_dict):
     return parameters
 
 
-# initialize ROS with any parameters provided as arguments
-reach_ros.init_ros(sys.argv)
+def main():
+    # initialize ROS with any parameters provided as arguments
+    reach_ros.init_ros(sys.argv)
 
-# Set logger level to reduce MoveIt message spam
-moveit_loggers = ["moveit_ros.robot_model_loader",
-                  "moveit_kinematics_base.kinematics_base",
-                  "moveit_rdf_loader.rdf_loader",
-                  "moveit_robot_model.robot_model"]
-for logger_name in moveit_loggers:
-    reach_ros.set_logger_level(
-        logger_name, LoggingSeverity.WARN)
+    # Set logger level to reduce MoveIt message spam
+    moveit_loggers = ["moveit_ros.robot_model_loader",
+                      "moveit_kinematics_base.kinematics_base",
+                      "moveit_rdf_loader.rdf_loader",
+                      "moveit_robot_model.robot_model"]
+    for logger_name in moveit_loggers:
+        reach_ros.set_logger_level(
+            logger_name, LoggingSeverity.WARN)
 
-# Manually load the paramters necessary for running MoveIt.
-reach_ros_dir = get_package_share_directory('reach_ros')
-urdf = subprocess.run(
-    ["xacro", f"{reach_ros_dir}/demo/model/reach_study.xacro"], stdout=subprocess.PIPE).stdout.decode('utf-8')
-with open(f"{reach_ros_dir}/demo/model/reach_study.srdf", 'r') as srdf_file:
-    srdf = srdf_file.read()
-moveit_parameters = []
-kinematics_parameters = parse_yaml(
-    f"{reach_ros_dir}/demo/model/kinematics.yaml",
-    "robot_description_kinematics.")
-moveit_parameters = moveit_parameters + kinematics_parameters
-joint_limit_parameters = parse_yaml(
-    f"{reach_ros_dir}/demo/model/joint_limits.yaml",
-    "robot_description_joint_limits.")
-moveit_parameters = moveit_parameters + joint_limit_parameters
-moveit_parameters.append(Parameter(name="robot_description", value=urdf))
-moveit_parameters.append(
-    Parameter(name="robot_description_semantic", value=srdf))
+    # Manually load the parameters necessary for running MoveIt.
+    reach_ros_dir = get_package_share_directory('reach_ros')
+    model_dir = os.path.join(reach_ros_dir, 'demo', 'model')
 
-for parameter in moveit_parameters:
-    # We don't need to declare the parameters as the node allows undeclared parameters
-    reach_ros.set_parameter(parameter.name, parameter.value)
+    # Generate the URDF string from the xacro file
+    urdf = xacro.process(os.path.join(model_dir, 'reach_study.xacro'))
 
-with open(f"{reach_ros_dir}/demo/config/reach_study.yaml", 'r') as f:
-    config = yaml.safe_load(f)
+    # Load the SRDF
+    with open(os.path.join(model_dir, 'reach_study.srdf'), 'r') as f:
+        srdf = f.read()
 
-# Disable the optimization steps to make this demo faster and highlight the performace difference
-config['optimization']['max_steps'] = 0
+    moveit_parameters = [
+        *parse_yaml(os.path.join(model_dir, 'kinematics.yaml'), 'robot_description_kinematics.'),
+        *parse_yaml(os.path.join(model_dir, 'joint_limits.yaml'), 'robot_description_joint_limits.'),
+        Parameter(name="robot_description", value=urdf),
+        Parameter(name="robot_description_semantic", value=srdf),
+    ]
 
-print("Starting first study with default kinematic parameters")
-reach.runReachStudy(config, "study1", "/tmp", False)
+    for parameter in moveit_parameters:
+        # We don't need to declare the parameters as the node allows undeclared parameters
+        reach_ros.set_parameter(parameter.name, parameter.value)
 
-# Loading the study results
-results_1 = reach.load("/tmp/study1/reach.db.xml").calculateResults()
+    with open(os.path.join(reach_ros_dir, 'demo', 'config', 'reach_study.yaml'), 'r') as f:
+        config = yaml.safe_load(f)
 
-# Decrease the IK solver time and see if we still find equally good solutions
-reach_ros.set_parameter(
-    "robot_description_kinematics.manipulator.kinematics_solver_timeout", 0.00005)
+    # Set the search libraries environment variable to include the plugin library provided by this package
+    os.environ[reach.SEARCH_LIBRARIES_ENV] = 'reach_ros_plugins'
 
-print("Starting second study with decreased solver resolution.")
-reach.runReachStudy(config, "study2", "/tmp", False)
+    # Disable the optimization steps to make this demo faster and highlight the performance difference
+    config['optimization']['max_steps'] = 0
 
-# Loading the study results
-results_2 = reach.load("/tmp/study2/reach.db.xml").calculateResults()
+    print("Starting first study with default kinematic parameters")
+    save_dir = "/tmp"
+    study_name = "study1"
+    reach.runReachStudy(config, study_name, save_dir, False)
 
-print(
-    f"Both REACH studies are finished. Here are the results\n  Original parameters: Score {results_1.total_pose_score:.2f} Reached {results_1.reach_percentage:.2f} %\n  Modified parameters: Score {results_2.total_pose_score:.2f} Reached {results_2.reach_percentage:.2f} %")
+    # Loading the study results
+    results_1 = reach.load(os.path.join(save_dir, study_name, 'reach.db.xml')).calculateResults()
+
+    # Decrease the IK solver time and see if we still find equally good solutions
+    reach_ros.set_parameter(
+        "robot_description_kinematics.manipulator.kinematics_solver_timeout", 0.00005)
+
+    print("Starting second study with decreased solver resolution.")
+    study_name = 'study2'
+    reach.runReachStudy(config, study_name, save_dir, False)
+
+    # Loading the study results
+    results_2 = reach.load(os.path.join(save_dir, study_name, 'reach.db.xml')).calculateResults()
+
+    print(f'Both REACH studies finished')
+    print(f'\tOriginal parameters: Score {results_1.total_pose_score:.2f}, Reached {results_1.reach_percentage:.2f}%')
+    print(f'\tModified parameters: Score {results_2.total_pose_score:.2f}, Reached {results_2.reach_percentage:.2f}%')
+
+
+if __name__ == '__main__':
+    main()
