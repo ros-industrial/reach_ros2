@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-from reach import load, runReachStudy, SEARCH_LIBRARIES_ENV
-from reach_ros import init_ros, set_parameter, parse_yaml, set_logger_level
+from reach import load, runReachStudy
+from reach_ros import init_ros, set_parameter, parse_yaml, set_logger_level, update_search_libraries_env
 
 from ament_index_python.packages import get_package_share_directory
-import os.path
+import os
 from rclpy.parameter import Parameter
 from rclpy.logging import LoggingSeverity
 import sys
@@ -49,8 +49,8 @@ def main():
     with open(os.path.join(reach_ros_dir, 'demo', 'config', 'reach_study.yaml'), 'r') as f:
         config = yaml.safe_load(f)
 
-    # Set the search libraries environment variable to include the plugin library provided by this package
-    os.environ[SEARCH_LIBRARIES_ENV] = 'reach_ros_plugins'
+    # Update the search libraries environment variable to include the plugin library provided by this package
+    update_search_libraries_env()
 
     # Disable the optimization steps to make this demo faster and highlight the performance difference
     config['optimization']['max_steps'] = 0
