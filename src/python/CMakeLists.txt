@@ -9,8 +9,9 @@ target_link_libraries(
           ${PYTHON_LIBRARIES})
 target_compile_definitions(${PROJECT_NAME}_python PRIVATE MODULE_NAME=_${PROJECT_NAME})
 set_target_properties(
-  ${PROJECT_NAME}_python PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib/python3.8/site-packages
-                                    OUTPUT_NAME _${PROJECT_NAME})
+  ${PROJECT_NAME}_python
+  PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib/python3.${Python_VERSION_MINOR}/site-packages
+             OUTPUT_NAME _${PROJECT_NAME})
 target_cxx_version(${PROJECT_NAME}_python PUBLIC VERSION 17)
 
 list(
