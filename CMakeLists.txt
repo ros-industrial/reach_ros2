@@ -12,6 +12,7 @@ if(BUILD_PYTHON)
   find_package(Python REQUIRED COMPONENTS Interpreter Development)
   find_package(PythonLibs 3 REQUIRED)
   find_package(Boost REQUIRED COMPONENTS python numpy)
+  find_package(ament_cmake_python REQUIRED)
 endif()
 
 find_package(reach REQUIRED)
@@ -72,6 +73,11 @@ ament_target_dependencies(${PROJECT_NAME}_node PUBLIC ${ROS2_DEPS})
 if(BUILD_PYTHON)
   message("Building Python bindings")
   add_subdirectory(src/python)
+
+  ament_python_install_package(${PROJECT_NAME})
+
+  # Install Python executables
+  install(PROGRAMS scripts/reach_ros_node.py scripts/demo.py DESTINATION lib/${PROJECT_NAME})
 endif()
 
 # Install the libraries
