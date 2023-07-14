@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <reach/utils.h>
 #include <reach_ros/utils.h>
-#include <rclcpp/rclcpp.hpp>
 
 #include <boost_plugin_loader/plugin_loader.hpp>
 #include <boost/python.hpp>
 #include <boost/python/converter/builtin_converters.hpp>
 #include <cstdarg>
+#include <reach/utils.h>
+#include <rclcpp/rclcpp.hpp>
 
 namespace bp = boost::python;
 
@@ -69,7 +69,7 @@ bp::object get_parameter(std::string name)
     case rclcpp::ParameterType::PARAMETER_STRING_ARRAY:
       return bp::object(parameter.as_string_array());
     default:
-      return bp::object();
+      throw std::runtime_error("Unknown parameter type");
   }
 }
 
