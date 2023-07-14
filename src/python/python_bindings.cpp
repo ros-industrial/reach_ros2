@@ -118,6 +118,33 @@ void set_parameter_string_array(std::string name, std::string* value)
   reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
 }
 
+void set_logger_level(std::string logger_name, int level_int)
+{
+  rclcpp::Logger::Level level;
+  switch (level_int)
+  {
+    case 10:
+      level = rclcpp::Logger::Level::Debug;
+      break;
+    case 20:
+      level = rclcpp::Logger::Level::Info;
+      break;
+    case 30:
+      level = rclcpp::Logger::Level::Warn;
+      break;
+    case 40:
+      level = rclcpp::Logger::Level::Error;
+      break;
+    case 50:
+      level = rclcpp::Logger::Level::Fatal;
+      break;
+    default:
+      std::cerr << "Invalid log level: " << level_int << std::endl;
+      level = rclcpp::Logger::Level::Unset;
+  }
+  rclcpp::get_logger(logger_name).set_level(level);
+}
+
 BOOST_PYTHON_MODULE(MODULE_NAME)
 {
   Py_Initialize();
@@ -135,6 +162,7 @@ BOOST_PYTHON_MODULE(MODULE_NAME)
     bp::def("set_parameter", &set_parameter_integer_array);
     bp::def("set_parameter", &set_parameter_double_array);
     bp::def("set_parameter", &set_parameter_string_array);
+    bp::def("set_logger_level", &set_logger_level);
   }
 }
 

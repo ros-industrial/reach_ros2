@@ -5,6 +5,7 @@ import yaml
 
 from ament_index_python.packages import get_package_share_directory
 from rclpy.parameter import Parameter, PARAMETER_SEPARATOR_STRING
+from rclpy.logging import LoggingSeverity
 
 import reach
 import reach_ros
@@ -33,6 +34,15 @@ def parse_parameter_dict(*, namespace, parameter_dict):
 
 # initialize ROS with any parameters provided as arguments
 reach_ros.init_ros(sys.argv)
+
+# Set logger level to reduce MoveIt message spam
+moveit_loggers = ["moveit_ros.robot_model_loader",
+                  "moveit_kinematics_base.kinematics_base",
+                  "moveit_rdf_loader.rdf_loader",
+                  "moveit_robot_model.robot_model"]
+for logger_name in moveit_loggers:
+    reach_ros.set_logger_level(
+        logger_name, LoggingSeverity.WARN)
 
 # Manually load the paramters necessary for running MoveIt.
 reach_ros_dir = get_package_share_directory('reach_ros')
