@@ -30,7 +30,8 @@ namespace display
 class ROSDisplay : public reach::Display
 {
 public:
-  ROSDisplay(std::string kinematic_base_frame, double marker_scale, bool use_full_color_range, bool use_red_to_green);
+  ROSDisplay(std::string kinematic_base_frame, double marker_scale, bool use_full_color_range, float hue_low_score,
+             float hue_high_score);
 
   void showEnvironment() const override;
   void updateRobotPose(const std::map<std::string, double>& pose) const override;
@@ -43,7 +44,8 @@ protected:
   const std::string kinematic_base_frame_;
   const double marker_scale_;
   const bool use_full_color_range_;
-  const bool use_red_to_green_;
+  const float hue_low_score_;
+  const float hue_high_score_;
   visualization_msgs::msg::Marker collision_marker_;
 
   // ROS comoponents

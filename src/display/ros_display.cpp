@@ -30,11 +30,12 @@ namespace reach_ros
 namespace display
 {
 ROSDisplay::ROSDisplay(std::string kinematic_base_frame, double marker_scale, bool use_full_color_range,
-                       bool use_red_to_green)
+                       float hue_low_score, float hue_high_score)
   : kinematic_base_frame_(std::move(kinematic_base_frame))
   , marker_scale_(marker_scale)
   , use_full_color_range_(use_full_color_range)
-  , use_red_to_green_(use_red_to_green)
+  , hue_low_score_(hue_low_score)
+  , hue_high_score_(hue_high_score)
 {
   // utils::initROS();
   server_ = std::make_shared<interactive_markers::InteractiveMarkerServer>(INTERACTIVE_MARKER_TOPIC,
@@ -73,7 +74,8 @@ void ROSDisplay::showResults(const reach::ReachResult& db) const
     updateRobotPose(db.at(idx).goal_state);
   };
 
-  Eigen::MatrixX3f heatmap_colors = reach::computeHeatMapColors(db, use_full_color_range_, use_red_to_green_);
+  Eigen::MatrixX3f heatmap_colors =
+      reach::computeHeatMapColors(db, use_full_color_range_, hue_low_score_, hue_high_score_);
 
   for (std::size_t i = 0; i < db.size(); ++i)
   {
@@ -140,11 +142,14 @@ reach::Display::ConstPtr ROSDisplayFactory::create(const YAML::Node& config) con
   bool use_fcr = false;
   if (config["use_full_color_range"])
     use_fcr = reach::get<bool>(config, "use_full_color_range");
-  bool use_red_to_green = false;
-  if (config["use_red_to_green"])
-    use_red_to_green = reach::get<bool>(config, "use_red_to_green");
-
-  auto display = std::make_shared<ROSDisplay>(kinematic_base_frame, marker_scale, use_fcr, use_red_to_green);
+  float hue_low_score = 270.0;
+  if (config["hue_low_score"])
+    hue_low_score = reach::get<float>(config, "hue_low_score");
+  float hue_high_score = 0.0;
+  if (config["hue_high_score"])
+    hue_high_score = reach::get<float>(config, "hue_high_score");
+  auto display =
+      std::make_shared<ROSDisplay>(kinematic_base_frame, marker_scale, use_fcr, hue_low_score, hue_high_score);
 
   // Optionally add a collision mesh
   const std::string collision_mesh_filename_key = "collision_mesh_filename";
