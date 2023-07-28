@@ -73,49 +73,32 @@ bp::object get_parameter(std::string name)
   }
 }
 
-void set_parameter_bool(std::string name, bool value)
+void set_parameter(std::string name, const bp::object& obj)
 {
-  reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
-}
-
-void set_parameter_integer(std::string name, int value)
-{
-  reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
-}
-
-void set_parameter_double(std::string name, double value)
-{
-  reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
-}
-
-void set_parameter_string(std::string name, std::string value)
-{
-  reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
-}
-
-void set_parameter_byte_array(std::string name, uint8_t* value)
-{
-  reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
-}
-
-void set_parameter_bool_array(std::string name, bool* value)
-{
-  reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
-}
-
-void set_parameter_integer_array(std::string name, int* value)
-{
-  reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
-}
-
-void set_parameter_double_array(std::string name, double* value)
-{
-  reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
-}
-
-void set_parameter_string_array(std::string name, std::string* value)
-{
-  reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, value));
+  // We use the direct checks for object type since bp::extract().check() does not distinguish between int and bool
+  if (PyBool_Check(obj.ptr()))
+    reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, bp::extract<bool>(obj)));
+  else if (PyLong_Check(obj.ptr()))
+    reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, bp::extract<int>(obj)));
+  else if (PyFloat_Check(obj.ptr()))
+    reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, bp::extract<float>(obj)));
+  else if (PyUnicode_Check(obj.ptr()))
+    reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, bp::extract<std::string>(obj)));
+  else if (PyList_Check(obj.ptr()))
+  {
+    bp::list list_obj = bp::extract<bp::list>(obj);
+    if (PyBool_Check(bp::object(list_obj[0]).ptr()))
+      reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, bp::extract<bool*>(list_obj)));
+    else if (PyLong_Check(bp::object(list_obj[0]).ptr()))
+      reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, bp::extract<int*>(list_obj)));
+    else if (PyFloat_Check(bp::object(list_obj[0]).ptr()))
+      reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, bp::extract<double*>(list_obj)));
+    else if (PyUnicode_Check(bp::object(list_obj[0]).ptr()))
+      reach_ros::utils::getNodeInstance()->set_parameter(rclcpp::Parameter(name, bp::extract<std::string*>(list_obj)));
+  }
+  else
+    throw std::runtime_error("Unsupported Python value type '" +
+                             bp::extract<std::string>{ obj.attr("__class__").attr("__name__") }() + "'");
 }
 
 void set_logger_level(std::string logger_name, int level_int)
@@ -151,17 +134,7 @@ BOOST_PYTHON_MODULE(MODULE_NAME)
   {
     bp::def("init_ros", &init_ros);
     bp::def("get_parameter", &get_parameter);
-    bp::def("set_parameter", &set_parameter_bool);
-    // It is important to define the double option before the integer one.
-    // Otherwise, all integers are interpreted as doubles.
-    bp::def("set_parameter", &set_parameter_double);
-    bp::def("set_parameter", &set_parameter_integer);
-    bp::def("set_parameter", &set_parameter_string);
-    bp::def("set_parameter", &set_parameter_byte_array);
-    bp::def("set_parameter", &set_parameter_bool_array);
-    bp::def("set_parameter", &set_parameter_integer_array);
-    bp::def("set_parameter", &set_parameter_double_array);
-    bp::def("set_parameter", &set_parameter_string_array);
+    bp::def("set_parameter", &set_parameter);
     bp::def("set_logger_level", &set_logger_level);
   }
 }
