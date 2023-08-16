@@ -16,10 +16,10 @@ def main():
     init_ros(sys.argv)
 
     # Set logger level to reduce MoveIt message spam
-    moveit_loggers = ["moveit_ros.robot_model_loader",
-                      "moveit_kinematics_base.kinematics_base",
-                      "moveit_rdf_loader.rdf_loader",
-                      "moveit_robot_model.robot_model"]
+    moveit_loggers = ["moveit_ros",
+                      "moveit_kinematics_base",
+                      "moveit_rdf_loader",
+                      "moveit_robot_model"]
     for logger_name in moveit_loggers:
         try:
             set_logger_level(logger_name, LoggingSeverity.WARN)
