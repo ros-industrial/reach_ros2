@@ -2,8 +2,8 @@
 Changelog for package reach_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.0 (2023-08-16)
+------------------
 * Added Python equivalent of the c++ reach study node
 * Added a Python interface to allow usage of ROS2 plugins in Python
 * Revised ROS node singleton pattern
