@@ -54,6 +54,9 @@ add_library(
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                                                   $<INSTALL_INTERFACE:include>)
 target_link_libraries(${PROJECT_NAME} PUBLIC reach::reach)
+if($ENV{ROS_DISTRO} STRGREATER_EQUAL "humble")
+  target_compile_definitions(${PROJECT_NAME} PRIVATE ROS2_AT_LEAST_HUMBLE)
+endif()
 ament_target_dependencies(${PROJECT_NAME} PUBLIC ${ROS2_DEPS})
 
 # Plugin Library

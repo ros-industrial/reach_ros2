@@ -101,6 +101,7 @@ void set_parameter(std::string name, const bp::object& obj)
                              bp::extract<std::string>{ obj.attr("__class__").attr("__name__") }() + "'");
 }
 
+#ifdef ROS2_AT_LEAST_HUMBLE
 void set_logger_level(std::string logger_name, int level_int)
 {
   rclcpp::Logger::Level level;
@@ -127,6 +128,7 @@ void set_logger_level(std::string logger_name, int level_int)
   }
   rclcpp::get_logger(logger_name).set_level(level);
 }
+#endif
 
 BOOST_PYTHON_MODULE(MODULE_NAME)
 {
@@ -135,7 +137,9 @@ BOOST_PYTHON_MODULE(MODULE_NAME)
     bp::def("init_ros", &init_ros);
     bp::def("get_parameter", &get_parameter);
     bp::def("set_parameter", &set_parameter);
+#ifdef ROS2_AT_LEAST_HUMBLE
     bp::def("set_logger_level", &set_logger_level);
+#endif
   }
 }
 
