@@ -2,6 +2,16 @@
 Changelog for package reach_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added Python equivalent of the c++ reach study node
+* Added a Python interface to allow usage of ROS2 plugins in Python
+* Revised ROS node singleton pattern
+* Remove the plugin library from ament_target_export so downstream packages cannot link against it
+* Link executable against main library instead of plugin library
+* Fixed typo in plugin export
+* Contributors: Marc Bestmann, Michael Ripperger
+
 1.1.0 (2023-06-13)
 ------------------
 * Updated to REACH 1.3.0
