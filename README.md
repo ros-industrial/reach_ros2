@@ -213,6 +213,10 @@ Parameters:
   - The length (in meters) of the arrow markers representing the target Cartesian points
 - **`use_full_color_range`** (optional, default: False)
   - Colorize the heat map using the full range of colors (such that the target with the lowest score is the deepest hue of blue, and the target with the highest score is the deepest hue of red)
+- **`hue_low_score`** (optional, default: 270.0)
+  - Allows changing the default heatmap style coloring to a different color scale in HSV space (e.g. `hue_low_score: 0.0, hue_high_score: 180.0` will lead to a red to green color scale).
+- **`hue_high_score`** (optional, default: 0.0)
+  - See `hue_low_score` for an explanation.
 
 ## Target Pose Generator Plugins
 
