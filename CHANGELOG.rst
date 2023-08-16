@@ -2,8 +2,8 @@
 Changelog for package reach_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.0 (2023-08-16)
+------------------
 * Add customizable color scale for visualization (`#18 <https://github.com/marip8/reach_ros2/issues/18>`_)
 * Contributors: Marc Bestmann
 
