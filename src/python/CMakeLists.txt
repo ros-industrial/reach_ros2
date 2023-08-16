@@ -8,6 +8,9 @@ target_link_libraries(
           Boost::numpy
           ${PYTHON_LIBRARIES})
 target_compile_definitions(${PROJECT_NAME}_python PRIVATE MODULE_NAME=_${PROJECT_NAME})
+if($ENV{ROS_DISTRO} STRGREATER_EQUAL "humble")
+  target_compile_definitions(${PROJECT_NAME}_python PRIVATE ROS2_AT_LEAST_HUMBLE)
+endif()
 set_target_properties(
   ${PROJECT_NAME}_python
   PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib/python3.${Python_VERSION_MINOR}/site-packages
