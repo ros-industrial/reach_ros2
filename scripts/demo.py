@@ -21,8 +21,10 @@ def main():
                       "moveit_rdf_loader.rdf_loader",
                       "moveit_robot_model.robot_model"]
     for logger_name in moveit_loggers:
-        set_logger_level(
-            logger_name, LoggingSeverity.WARN)
+        try:
+            set_logger_level(logger_name, LoggingSeverity.WARN)
+        except:
+            pass
 
     # Manually load the parameters necessary for running MoveIt.
     reach_ros_dir = get_package_share_directory('reach_ros')
