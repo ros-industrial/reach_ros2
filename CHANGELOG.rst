@@ -2,6 +2,11 @@
 Changelog for package reach_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Updated python module install (`#22 <https://github.com/marip8/reach_ros2/issues/22>`_)
+* Contributors: Michael Ripperger
+
 1.3.0 (2023-08-16)
 ------------------
 * Add customizable color scale for visualization (`#18 <https://github.com/marip8/reach_ros2/issues/18>`_)
