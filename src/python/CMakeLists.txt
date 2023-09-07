@@ -11,14 +11,7 @@ target_compile_definitions(${PROJECT_NAME}_python PRIVATE MODULE_NAME=_${PROJECT
 if($ENV{ROS_DISTRO} STRGREATER_EQUAL "humble")
   target_compile_definitions(${PROJECT_NAME}_python PRIVATE ROS2_AT_LEAST_HUMBLE)
 endif()
-set_target_properties(
-  ${PROJECT_NAME}_python
-  PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib/python3.${Python_VERSION_MINOR}/site-packages
-             OUTPUT_NAME _${PROJECT_NAME})
+set_target_properties(${PROJECT_NAME}_python PROPERTIES OUTPUT_NAME _${PROJECT_NAME})
 target_cxx_version(${PROJECT_NAME}_python PUBLIC VERSION 17)
 
-list(
-  APPEND
-  TARGETS
-  ${PROJECT_NAME}_python
-  PARENT_SCOPE)
+install(TARGETS ${PROJECT_NAME}_python DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_DIR})
