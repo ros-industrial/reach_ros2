@@ -2,8 +2,8 @@
 Changelog for package reach_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.2 (2023-09-14)
+------------------
 * Updated CMake version for if STRGREATER_EQUAL command (`#23 <https://github.com/marip8/reach_ros2/issues/23>`_)
 * Contributors: Michael Ripperger
 
