@@ -58,6 +58,7 @@ jobs:
           PREFIX: ${{ github.repository }}_
           CMAKE_ARGS: '-DENABLE_TESTING=ON -DENABLE_RUN_TESTING=OFF'
           DOCKER_IMAGE: 'ros:${{ matrix.distro }}'
+          AFTER_SCRIPT: 'rm -rf $BASEDIR/${PREFIX}upstream_ws/build $BASEDIR/${PREFIX}target_ws/build'
           DOCKER_COMMIT: ${{ steps.meta.outputs.tags }}
 
       - name: Push post-build Docker
