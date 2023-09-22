@@ -2,6 +2,12 @@
 Changelog for package reach_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use YAML anchors in reach study config files to simplify (`#24 <https://github.com/marip8/reach_ros2/issues/24>`_)
+* Run CI workflow on tag push and workflow dispatch (`#25 <https://github.com/marip8/reach_ros2/issues/25>`_)
+* Contributors: Michael Ripperger
+
 1.3.2 (2023-09-14)
 ------------------
 * Updated CMake version for if STRGREATER_EQUAL command (`#23 <https://github.com/marip8/reach_ros2/issues/23>`_)
