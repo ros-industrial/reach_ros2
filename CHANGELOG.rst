@@ -2,8 +2,8 @@
 Changelog for package reach_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.3.4 (2023-09-25)
+------------------
 * Python CMake Update (`#27 <https://github.com/marip8/reach_ros2/issues/27>`_)
   * Ensure PYTHON_INSTALL_DIR is set by ament
   * Replace ROS version compile definition with preprocessor check
