@@ -22,6 +22,10 @@
 #include <reach/utils.h>
 #include <rclcpp/rclcpp.hpp>
 
+#if __has_include(<rclcpp/version.h>)
+#include <rclcpp/version.h>
+#endif
+
 namespace bp = boost::python;
 
 namespace reach_ros
@@ -103,7 +107,7 @@ void set_parameter(std::string name, const bp::object& obj)
 
 void set_logger_level(std::string logger_name, int level_int)
 {
-#ifdef ROS2_AT_LEAST_HUMBLE
+#if __has_include(<rclcpp/version.h>) && (RCLCPP_VERSION_MAJOR >= 5)
   rclcpp::Logger::Level level;
   switch (level_int)
   {
