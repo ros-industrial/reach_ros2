@@ -8,10 +8,10 @@ target_link_libraries(
           Boost::numpy
           ${PYTHON_LIBRARIES})
 target_compile_definitions(${PROJECT_NAME}_python PRIVATE MODULE_NAME=_${PROJECT_NAME})
-if($ENV{ROS_DISTRO} STRGREATER_EQUAL "humble")
-  target_compile_definitions(${PROJECT_NAME}_python PRIVATE ROS2_AT_LEAST_HUMBLE)
-endif()
 set_target_properties(${PROJECT_NAME}_python PROPERTIES OUTPUT_NAME _${PROJECT_NAME})
 target_cxx_version(${PROJECT_NAME}_python PUBLIC VERSION 17)
 
-install(TARGETS ${PROJECT_NAME}_python DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_DIR})
+if(NOT PYTHON_INSTALL_DIR)
+  message(FATAL ERROR "'PYTHON_INSTALL_DIR' must not be empty")
+endif()
+install(TARGETS ${PROJECT_NAME}_python DESTINATION ${PYTHON_INSTALL_DIR})

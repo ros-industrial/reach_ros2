@@ -69,9 +69,10 @@ ament_target_dependencies(${PROJECT_NAME}_node PUBLIC ${ROS2_DEPS})
 
 if(BUILD_PYTHON)
   message("Building Python bindings")
-  add_subdirectory(src/python)
 
+  # Call ament_python_install_package first to set PYTHON_INSTALL_DIR
   ament_python_install_package(${PROJECT_NAME})
+  add_subdirectory(src/python)
 
   # Install Python executables
   install(PROGRAMS scripts/reach_ros_node.py scripts/demo.py DESTINATION lib/${PROJECT_NAME})
