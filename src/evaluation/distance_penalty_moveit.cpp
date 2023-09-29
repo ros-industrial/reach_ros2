@@ -19,6 +19,7 @@
 #include <moveit/common_planning_interface_objects/common_objects.h>
 #include <moveit/planning_scene/planning_scene.h>
 #include <reach/plugin_utils.h>
+#include <reach/utils.h>
 #include <yaml-cpp/yaml.h>
 
 namespace reach_ros
@@ -58,7 +59,7 @@ void DistancePenaltyMoveIt::setTouchLinks(const std::vector<std::string>& touch_
 double DistancePenaltyMoveIt::calculateScore(const std::map<std::string, double>& pose) const
 {
   // Pull the joints from the planning group out of the input pose map
-  std::vector<double> pose_subset = utils::transcribeInputMap(pose, jmg_->getActiveJointModelNames());
+  std::vector<double> pose_subset = reach::extractSubset(pose, jmg_->getActiveJointModelNames());
   moveit::core::RobotState state(model_);
   state.setJointGroupPositions(jmg_, pose_subset);
   state.update();

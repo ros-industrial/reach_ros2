@@ -19,6 +19,7 @@
 #include <moveit/common_planning_interface_objects/common_objects.h>
 #include <moveit/planning_scene/planning_scene.h>
 #include <reach/plugin_utils.h>
+#include <reach/utils.h>
 #include <yaml-cpp/yaml.h>
 
 namespace
@@ -62,7 +63,7 @@ std::vector<std::vector<double>> MoveItIKSolver::solveIK(const Eigen::Isometry3d
 
   const std::vector<std::string>& joint_names = jmg_->getActiveJointModelNames();
 
-  std::vector<double> seed_subset = utils::transcribeInputMap(seed, joint_names);
+  std::vector<double> seed_subset = reach::extractSubset(seed, joint_names);
   state.setJointGroupPositions(jmg_, seed_subset);
   state.update();
 

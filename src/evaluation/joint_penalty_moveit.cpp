@@ -19,6 +19,7 @@
 #include <moveit/robot_model/joint_model_group.h>
 #include <moveit/common_planning_interface_objects/common_objects.h>
 #include <reach/plugin_utils.h>
+#include <reach/utils.h>
 #include <yaml-cpp/yaml.h>
 
 namespace reach_ros
@@ -37,7 +38,7 @@ JointPenaltyMoveIt::JointPenaltyMoveIt(moveit::core::RobotModelConstPtr model, c
 double JointPenaltyMoveIt::calculateScore(const std::map<std::string, double>& pose) const
 {
   // Pull the joints from the planning group out of the input pose map
-  std::vector<double> pose_subset = utils::transcribeInputMap(pose, jmg_->getActiveJointModelNames());
+  std::vector<double> pose_subset = reach::extractSubset(pose, jmg_->getActiveJointModelNames());
   Eigen::Map<const Eigen::ArrayXd> min(joints_min_.data(), joints_min_.size());
   Eigen::Map<const Eigen::ArrayXd> max(joints_max_.data(), joints_max_.size());
   Eigen::Map<const Eigen::ArrayXd> joints(pose_subset.data(), pose_subset.size());
