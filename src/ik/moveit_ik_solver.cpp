@@ -46,6 +46,9 @@ MoveItIKSolver::MoveItIKSolver(moveit::core::RobotModelConstPtr model, const std
 {
   if (!jmg_)
     throw std::runtime_error("Failed to initialize joint model group for planning group '" + planning_group + "'");
+  if (!jmg_->getSolverInstance())
+    throw std::runtime_error("No kinematics solver instantiated for planning group '" + planning_group +
+                             "'. Check that the 'kinematics.yaml' file was loaded as a parameter");
 
   scene_.reset(new planning_scene::PlanningScene(model_));
 
