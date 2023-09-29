@@ -19,6 +19,7 @@
 #include <geometric_shapes/shape_operations.h>
 #include <geometric_shapes/shapes.h>
 #include <reach/types.h>
+#include <reach/utils.h>
 
 const static double ARROW_SCALE_RATIO = 6.0;
 const static double NEIGHBOR_MARKER_SCALE_RATIO = ARROW_SCALE_RATIO / 2.0;
@@ -217,22 +218,7 @@ visualization_msgs::msg::Marker makeMarker(const std::vector<geometry_msgs::msg:
 std::vector<double> transcribeInputMap(const std::map<std::string, double>& input,
                                        const std::vector<std::string>& joint_names)
 {
-  if (joint_names.size() > input.size())
-    throw std::runtime_error("Seed pose size was not at least as large as the number of joints in the planning group");
-
-  // Pull the joints of the planning group out of the input map
-  std::vector<double> joints;
-  joints.reserve(joint_names.size());
-  for (const std::string& name : joint_names)
-  {
-    const auto it = input.find(name);
-    if (it == input.end())
-      throw std::runtime_error("Joint '" + name + "' in the planning group was not in the input map");
-
-    joints.push_back(it->second);
-  }
-
-  return joints;
+  return reach::extractSubset(input, joint_names);
 }
 
 }  // namespace utils
