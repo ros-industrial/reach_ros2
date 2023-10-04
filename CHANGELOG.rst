@@ -2,6 +2,11 @@
 Changelog for package reach_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Export dependency on reach (`#29 <https://github.com/marip8/reach_ros2/issues/29>`_)
+* Contributors: Michael Ripperger
+
 1.3.4 (2023-09-25)
 ------------------
 * Python CMake Update (`#27 <https://github.com/marip8/reach_ros2/issues/27>`_)
