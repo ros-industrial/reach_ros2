@@ -2,6 +2,16 @@
 Changelog for package reach_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* IK Solver Update (`#30 <https://github.com/marip8/reach_ros2/issues/30>`_)
+  * Migrate utility function to reach
+  * Replace deprecated function
+  * Check that IK solver has been loaded for move group
+  * Run format jobs on 20.04
+  * Ran clang format
+* Contributors: Michael Ripperger
+
 1.3.5 (2023-10-04)
 ------------------
 * Export dependency on reach (`#29 <https://github.com/marip8/reach_ros2/issues/29>`_)
