@@ -20,6 +20,7 @@
 #include <moveit/robot_model/joint_model_group.h>
 #include <numeric>
 #include <reach/plugin_utils.h>
+#include <reach/utils.h>
 #include <yaml-cpp/yaml.h>
 
 static std::vector<Eigen::Index> getJacobianRowSubset(const YAML::Node& config, const std::string& key = "jacobian_row_"
@@ -118,7 +119,7 @@ double ManipulabilityMoveIt::calculateScore(const std::map<std::string, double>&
   moveit::core::RobotState state(model_);
 
   // Take the subset of joints in the joint model group out of the input pose
-  std::vector<double> pose_subset = utils::transcribeInputMap(pose, jmg_->getActiveJointModelNames());
+  std::vector<double> pose_subset = reach::extractSubset(pose, jmg_->getActiveJointModelNames());
   state.setJointGroupPositions(jmg_, pose_subset);
   state.update();
 

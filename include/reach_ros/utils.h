@@ -49,8 +49,8 @@ visualization_msgs::msg::InteractiveMarker makeInteractiveMarker(const std::stri
 visualization_msgs::msg::Marker makeMarker(const std::vector<geometry_msgs::msg::Point>& pts, const std::string& frame,
                                            const double scale, const std::string& ns = "");
 
-std::vector<double> transcribeInputMap(const std::map<std::string, double>& input,
-                                       const std::vector<std::string>& joint_names);
+[[deprecated]] std::vector<double> transcribeInputMap(const std::map<std::string, double>& input,
+                                                      const std::vector<std::string>& joint_names);
 
 /**
  * @brief Returns a singleton ROS2 node for accessing parameters and publishing data

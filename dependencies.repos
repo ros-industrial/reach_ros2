@@ -9,4 +9,4 @@
 - git:
    local-name: reach
    uri: https://github.com/ros-industrial/reach.git
-   version: 1.5.2
+   version: 1.6.0

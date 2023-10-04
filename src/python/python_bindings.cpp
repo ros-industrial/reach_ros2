@@ -30,7 +30,6 @@ namespace bp = boost::python;
 
 namespace reach_ros
 {
-
 void init_ros(const bp::list& argv)
 {
   int argc = bp::len(argv);
