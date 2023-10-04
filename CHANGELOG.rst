@@ -2,8 +2,8 @@
 Changelog for package reach_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.4.0 (2023-10-04)
+------------------
 * IK Solver Update (`#30 <https://github.com/marip8/reach_ros2/issues/30>`_)
   * Migrate utility function to reach
   * Replace deprecated function
