@@ -13,6 +13,6 @@ EXPORT_EVALUATOR_PLUGIN(reach_ros::evaluation::ManipulabilityMoveItFactory, Mani
 EXPORT_EVALUATOR_PLUGIN(reach_ros::evaluation::ManipulabilityScaledFactory, ManipulabilityScaledMoveIt)
 EXPORT_EVALUATOR_PLUGIN(reach_ros::evaluation::ManipulabilityRatioFactory, ManipulabilityRatioMoveIt)
 EXPORT_IK_SOLVER_PLUGIN(reach_ros::ik::MoveItIKSolverFactory, MoveItIKSolver)
-EXPORT_IK_SOLVER_PLUGIN(reach_ros::ik::DiscretizedMoveItIKSolverFactory, DiscretizedMoveItIKSolverFactory)
+EXPORT_IK_SOLVER_PLUGIN(reach_ros::ik::DiscretizedMoveItIKSolverFactory, DiscretizedMoveItIKSolver)
 EXPORT_TARGET_POSE_GENERATOR_PLUGIN(reach_ros::TransformedPointCloudTargetPoseGeneratorFactory,
                                     TransformedPointCloudTargetPoseGenerator)
