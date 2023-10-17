@@ -22,6 +22,7 @@ def declare_launch_arguments():
 
 def generate_launch_description():
     robot_description = ParameterValue(Command(['xacro ', LaunchConfiguration('robot_description_file')]), value_type=str)
+    robot_description_semantic = ParameterValue(Command(['cat ', LaunchConfiguration('robot_description_semantic_file')]), value_type=str)
     nodes = [
       # Robot state publisher
       Node(package='robot_state_publisher',
@@ -41,6 +42,10 @@ def generate_launch_description():
            executable='rviz2',
            name='rviz2',
            arguments=['-d', LaunchConfiguration('rviz_config')],
+           parameters=[
+               {'robot_description': robot_description,
+                'robot_description_semantic': robot_description_semantic},
+           ],
            output='screen')
     ]
 
