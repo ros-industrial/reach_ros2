@@ -43,7 +43,7 @@ ROSDisplay::ROSDisplay(std::string kinematic_base_frame, double marker_scale, bo
   joint_state_pub_ =
       reach_ros::utils::getNodeInstance()->create_publisher<sensor_msgs::msg::JointState>(JOINT_STATES_TOPIC, 1);
   mesh_pub_ =
-      reach_ros::utils::getNodeInstance()->create_publisher<visualization_msgs::msg::Marker>(MESH_MARKER_TOPIC, 1);
+      reach_ros::utils::getNodeInstance()->create_publisher<visualization_msgs::msg::Marker>(MESH_MARKER_TOPIC, rclcpp::QoS(1).transient_local());
   neighbors_pub_ =
       reach_ros::utils::getNodeInstance()->create_publisher<visualization_msgs::msg::Marker>(NEIGHBORS_MARKER_TOPIC, 1);
 }
