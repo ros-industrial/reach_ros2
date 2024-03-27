@@ -17,7 +17,7 @@
 #include <reach_ros/utils.h>
 
 #include <reach/plugin_utils.h>
-#include <tf2_eigen/tf2_eigen.h>
+#include <tf2_eigen/tf2_eigen.hpp>
 #include <yaml-cpp/yaml.h>
 
 const static std::string JOINT_STATES_TOPIC = "reach_joints";
