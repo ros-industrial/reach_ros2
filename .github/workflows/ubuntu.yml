@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         distro: [foxy, humble, jazzy]
-    container: ubuntu:${{ matrix.distro }}
+    container: ros:${{ matrix.distro }}
     env:
       CCACHE_DIR: ${{ github.workspace }}/${{ matrix.distro }}/.ccache
       DEBIAN_FRONTEND: noninteractive
