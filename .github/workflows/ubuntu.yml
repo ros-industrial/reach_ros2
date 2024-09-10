@@ -37,7 +37,7 @@ jobs:
         uses: tesseract-robotics/colcon-action@v9
         with:
           ccache-prefix: ${{ matrix.distro }}
-          add-ros-ppa: true
+          add-ros-ppa: false
           vcs-file: dependencies.repos
           target-path: target_ws/src
           target-args: --cmake-args -DCMAKE_BUILD_TYPE=Debug -DENABLE_TESTING=ON -DENABLE_RUN_TESTING=OFF
