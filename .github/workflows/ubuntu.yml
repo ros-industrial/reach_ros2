@@ -22,45 +22,22 @@ jobs:
       fail-fast: false
       matrix:
         distro: [foxy, humble, jazzy]
+    container: ubuntu:${{ matrix.distro }}
     env:
-      REGISTRY: ghcr.io
-      IMAGE_NAME: ${{ github.repository }}
-      PREFIX: ${{ github.repository }}_
+      CCACHE_DIR: ${{ github.workspace }}/${{ matrix.distro }}/.ccache
+      DEBIAN_FRONTEND: noninteractive
+      TZ: Etc/UTC
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Login to Github Packages
-        uses: docker/login-action@v2
+        uses: actions/checkout@v4
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          path: target_ws/src
 
-      - name: Extract Docker meta-information
-        id: meta
-        uses: docker/metadata-action@v3
+      - name: Build and test
+        uses: tesseract-robotics/colcon-action@v9
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          flavor: |
-            latest=false
-            prefix=
-            suffix=
-          tags: |
-            type=ref,event=branch,prefix=${{ matrix.distro }}-
-            type=semver,pattern={{major}}.{{minor}},prefix=${{ matrix.distro }}-
-
-      - name: Build repository
-        uses: 'ros-industrial/industrial_ci@master'
-        env:
-          ROS_DISTRO: ${{ matrix.distro }}          
-          UPSTREAM_WORKSPACE: dependencies.repos
-          PREFIX: ${{ github.repository }}_
-          CMAKE_ARGS: '-DENABLE_TESTING=ON -DENABLE_RUN_TESTING=OFF'
-          DOCKER_IMAGE: 'ros:${{ matrix.distro }}'
-          AFTER_SCRIPT: 'rm -rf $BASEDIR/${PREFIX}upstream_ws/build $BASEDIR/${PREFIX}target_ws/build'
-          DOCKER_COMMIT: ${{ steps.meta.outputs.tags }}
-
-      - name: Push post-build Docker
-        if: ${{ github.ref == 'refs/heads/master' || github.event_name == 'release' || github.ref_type == 'tag' }}
-        run: docker push ${{ steps.meta.outputs.tags }}
+          ccache-prefix: ${{ matrix.distro }}
+          add-ros-ppa: true
+          vcs-file: dependencies.repos
+          target-path: target_ws/src
+          target-args: --cmake-args -DCMAKE_BUILD_TYPE=Debug -DENABLE_TESTING=ON -DENABLE_RUN_TESTING=OFF
