@@ -34,7 +34,7 @@ jobs:
           path: target_ws/src
 
       - name: Build and test
-        uses: tesseract-robotics/colcon-action@v9
+        uses: tesseract-robotics/colcon-action@v11
         with:
           before-script: source /opt/ros/${{ matrix.distro }}/setup.bash
           ccache-prefix: ${{ matrix.distro }}
