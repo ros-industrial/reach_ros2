@@ -55,8 +55,6 @@ def launch(context, *args, **kwargs):
     kinematics_yaml = load_yaml(robot_description_kinematics_file.perform(context))
     joint_limits_yaml = load_yaml(robot_description_joints_limits_file.perform(context))
 
-    os.environ['REACH_PLUGINS'] = 'reach_ros_plugins'
-
     return [
         Node(
             package='reach_ros',
