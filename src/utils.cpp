@@ -122,11 +122,10 @@ visualization_msgs::msg::Marker makeVisual(const reach::ReachRecord& r, const st
 
   // Transform arrow such that arrow x-axis points along goal pose z-axis (Rviz convention)
   // convert msg parameter goal to Eigen matrix
-  Eigen::AngleAxisd rot_flip_normal(M_PI, Eigen::Vector3d::UnitX());
   Eigen::AngleAxisd rot_x_to_z(-M_PI / 2, Eigen::Vector3d::UnitY());
 
   // Transform
-  Eigen::Isometry3d goal_eigen = r.goal * rot_flip_normal * rot_x_to_z;
+  Eigen::Isometry3d goal_eigen = r.goal * rot_x_to_z;
 
   // Convert back to geometry_msgs pose
   geometry_msgs::msg::Pose msg = tf2::toMsg(goal_eigen);
