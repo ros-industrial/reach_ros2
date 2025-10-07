@@ -51,7 +51,8 @@ add_library(
   # Display
   src/display/ros_display.cpp
   # Target pose generator
-  src/target_pose_generator/transformed_point_cloud_target_pose_generator.cpp)
+  src/target_pose_generator/transformed_point_cloud_target_pose_generator.cpp
+  src/target_pose_generator/transformed_yaml_target_pose_generator.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                                                   $<INSTALL_INTERFACE:include>)
 target_link_libraries(${PROJECT_NAME} PUBLIC reach::reach)
@@ -89,7 +90,7 @@ install(TARGETS ${PROJECT_NAME}_node DESTINATION lib/${PROJECT_NAME})
 install(DIRECTORY include/${PROJECT_NAME} DESTINATION include)
 
 # Install the support directories
-install(DIRECTORY launch demo DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY launch demo runs DESTINATION share/${PROJECT_NAME})
 
 # Install hook so REACH_PLUGINS env. var is updated appropriately
 ament_environment_hooks("${CMAKE_CURRENT_SOURCE_DIR}/hooks/reach_env_var.dsv.in")

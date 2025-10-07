@@ -4,6 +4,7 @@
 #include <reach_ros/evaluation/manipulability_moveit.h>
 #include <reach_ros/ik/moveit_ik_solver.h>
 #include <reach_ros/target_pose_generator/transformed_point_cloud_target_pose_generator.h>
+#include <reach_ros/target_pose_generator/transformed_yaml_target_pose_generator.h>
 
 #include <reach/plugin_utils.h>
 EXPORT_DISPLAY_PLUGIN(reach_ros::display::ROSDisplayFactory, ROSDisplay)
@@ -16,3 +17,5 @@ EXPORT_IK_SOLVER_PLUGIN(reach_ros::ik::MoveItIKSolverFactory, MoveItIKSolver)
 EXPORT_IK_SOLVER_PLUGIN(reach_ros::ik::DiscretizedMoveItIKSolverFactory, DiscretizedMoveItIKSolver)
 EXPORT_TARGET_POSE_GENERATOR_PLUGIN(reach_ros::TransformedPointCloudTargetPoseGeneratorFactory,
                                     TransformedPointCloudTargetPoseGenerator)
+EXPORT_TARGET_POSE_GENERATOR_PLUGIN(reach_ros::TransformedYAMLTargetPoseGeneratorFactory,
+                                    TransformedYAMLTargetPoseGenerator)
