@@ -21,6 +21,7 @@ find_package(yaml-cpp REQUIRED)
 
 set(ROS2_DEPS
     tf2_eigen
+    geometric_shapes
     interactive_markers
     moveit_core
     moveit_msgs
