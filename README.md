@@ -34,7 +34,7 @@ Use the following steps to run a reach study with a robot using the ROS1 infrast
 
 1. Create any files describing your robot system required by the REACH plugins (e.g., URDF, SRDF, kinematics file, joint limits file, etc.)
 1. Create a mesh model of the workpiece
-    > Note: the origin of this model should align with the kinematic base frame of the robot
+    > Note: the origin of this model should align with the root frame of the robot URDF (the MoveIt model frame)
 1. Create a point cloud of the target points on the workpiece
     - This point cloud can be generated using a command line tool from PCL 1.8:
       ```
@@ -208,7 +208,8 @@ Parameters:
   - The TF frame to which the collision mesh should be attached
   - If left unspecified, the collision mesh will be attached to `kinematic_base_frame`
 - **`kinematic_base_frame`**
-  - The base frame of the kinematic tree in which to display the interactive markers
+  - The frame in which to display the interactive markers
+  - This must be the frame in which the target poses were expressed for the reach study, i.e. the root frame of the URDF when using the MoveIt! IK solver plugins
 - **`marker_scale`**
   - The length (in meters) of the arrow markers representing the target Cartesian points
 - **`use_full_color_range`** (optional, default: False)
@@ -222,7 +223,7 @@ Parameters:
 
 ### Transformed Point Cloud Target Pose Generator
 
-This plugin inherits `reach::PointCloudTargetPoseGenerator`, which creates target reach study waypoints from a point cloud file with normals, and transforms the point cloud points into a desired URDF frame (typically the kinematic base frame of the robot).
+This plugin inherits `reach::PointCloudTargetPoseGenerator`, which creates target reach study waypoints from a point cloud file with normals, and transforms the point cloud points into a desired URDF frame (the root frame of the URDF when using the MoveIt! IK solver plugins).
 
 Parameters:
 
@@ -231,4 +232,4 @@ Parameters:
 - **`points_frame`**
   - The frame of the URDF to which the point cloud points are relative (i.e. the origin frame of the point cloud)
 - **`target_frame`**
-  - The frame into which the point cloud points should be transformed for the reach study purposes. This should be the kinematic base frame of the robot
+  - The frame into which the point cloud points should be transformed for the reach study purposes. When using the MoveIt! IK solver plugins this must be the root frame of the URDF, **not** the base link of `planning_group`
